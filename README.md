@@ -29,7 +29,7 @@
 
 ## 本地预览
 
-项目是纯静态站点，不需要构建。由于地图依赖 Leaflet CDN 与高德瓦片，请联网打开。
+项目是纯静态站点，不需要构建。Leaflet 与聚合插件已放在 `assets/vendor/` 本地托管；底图瓦片仍需联网加载高德地图服务。
 
 ```bash
 # 在项目根目录启动一个静态服务器
@@ -80,8 +80,8 @@ node scripts/build-stories.js
 
 ## 技术栈
 
-- [Leaflet](https://leafletjs.com/) 1.9.4（BSD-2-Clause）
-- [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) 1.5.3（MIT）
+- [Leaflet](https://leafletjs.com/) 1.9.4（BSD-2-Clause，本地托管）
+- [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) 1.5.3（MIT，本地托管）
 - 高德地图标准/卫星瓦片（遵循高德服务条款）
 - 原生 HTML / CSS / JavaScript，无后端、无构建依赖
 

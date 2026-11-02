@@ -7,9 +7,9 @@
 <meta name="description" content="中国大陆 99 处毛泽东塑像、铜像、纪念地与标语题词的交互地图。每个地点都配有一段背后的故事，支持分类、省份、年代筛选与一键导航。">
 <meta name="theme-color" content="#a92d24">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="https://cdn.staticfile.org/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="https://cdn.staticfile.org/leaflet.markercluster/1.5.3/MarkerCluster.css">
-<link rel="stylesheet" href="https://cdn.staticfile.org/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="assets/vendor/leaflet-markercluster/MarkerCluster.css">
+<link rel="stylesheet" href="assets/vendor/leaflet-markercluster/MarkerCluster.Default.css">
 <style>
 :root{
   --bg:#f3eee4;--panel:#fffdf8;--panel2:#faf6ee;--ink:#29221e;--muted:#7c7065;
@@ -264,8 +264,8 @@ body.sidebar-collapsed #sidebar{margin-left:calc(-1 * var(--sw))}
   </div>
 </div>
 <div id="toast"></div>
-<script src="https://cdn.staticfile.org/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdn.staticfile.org/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+<script src="assets/vendor/leaflet/leaflet.js"></script>
+<script src="assets/vendor/leaflet-markercluster/leaflet.markercluster.js"></script>
 <script>
 const CATS = {
   statue:  {name:"塑像", short:"塑", color:"#a92d24"},
