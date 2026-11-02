@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>山河印记 · 交互地图 | 毛泽东塑像与红色地标（中国大陆）</title>
+<meta name="description" content="中国大陆 99 处毛泽东塑像、铜像、纪念地与标语题词的交互地图。每个地点都配有一段背后的故事，支持分类、省份、年代筛选与一键导航。">
+<meta name="theme-color" content="#a92d24">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.staticfile.org/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/leaflet.markercluster/1.5.3/MarkerCluster.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/leaflet.markercluster/1.5.3/MarkerCluster.Default.css">
+<style>
+:root{
+  --bg:#f3eee4;--panel:#fffdf8;--panel2:#faf6ee;--ink:#29221e;--muted:#7c7065;
+  --line:#e4d9c8;--red:#a92d24;--red2:#8d211a;--gold:#b07d1a;--blue:#2f6f8f;--green:#3f7d4e;
+  --shadow:0 10px 40px rgba(52,35,20,.16);--sw:390px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;color:var(--ink);background:var(--bg);overflow:hidden;-webkit-font-smoothing:antialiased}
+button,select,input{font:inherit}
+button{cursor:pointer}
+a{color:var(--red);text-decoration:none}
+a:hover{text-decoration:underline}
+#app{display:flex;height:100%;width:100%}
+
+/* Sidebar */
+#sidebar{width:var(--sw);min-width:var(--sw);height:100%;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;position:relative;z-index:500;box-shadow:8px 0 30px rgba(60,40,20,.06);transition:margin-left .28s ease,transform .28s ease}
+body.sidebar-collapsed #sidebar{margin-left:calc(-1 * var(--sw))}
+.brand{padding:18px 20px 14px;background:radial-gradient(120% 90% at 0% 0%,rgba(169,45,36,.09),transparent 55%),linear-gradient(180deg,#fffdf8,#fbf6ec);border-bottom:1px solid var(--line);display:flex;gap:13px;align-items:flex-start}
+.seal{width:42px;height:42px;flex:0 0 42px;border-radius:6px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Songti SC","STSong","SimSun",serif;font-size:25px;font-weight:700;transform:rotate(-3deg);box-shadow:0 4px 12px rgba(169,45,36,.3);margin-top:2px}
+.brand h1{margin:0;font-family:"Songti SC","STSong","SimSun",serif;font-size:19px;line-height:1.3;letter-spacing:.5px}
+.brand p{margin:4px 0 0;font-size:11.5px;color:var(--muted);letter-spacing:.4px}
+.stats{display:flex;gap:13px;margin-top:7px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.stats b{color:var(--red);font-size:13px;margin-right:1px}
+
+/* Search + filters */
+.controls{padding:12px 16px 8px;border-bottom:1px solid var(--line);background:var(--panel)}
+.search{position:relative}
+.search input{width:100%;height:38px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 34px 0 34px;outline:none;font-size:13px;color:var(--ink);transition:border .2s,box-shadow .2s}
+.search input:focus{border-color:#c9a98c;box-shadow:0 0 0 3px rgba(169,45,36,.08)}
+.search .ico{position:absolute;left:11px;top:9px;color:#a39484;font-size:15px}
+.search kbd{position:absolute;right:9px;top:10px;font-size:10px;color:#a39484;border:1px solid var(--line);border-radius:4px;padding:1px 5px;background:#faf6ee;font-family:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;color:#5c5148;border-radius:999px;padding:5px 9px;font-size:11.5px;line-height:1;transition:.15s}
+.chip:hover{border-color:#cdb9a2}
+.chip.on{background:#f7eee2;border-color:#d9bfa2;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(169,45,36,.06)}
+.chip.off{opacity:.45;filter:grayscale(.4)}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px rgba(0,0,0,.04)}
+.chip b{font-weight:600;color:var(--muted);font-size:10.5px}
+.selects{display:flex;gap:7px;margin-top:9px}
+.selects select{flex:1;height:32px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:0 8px;font-size:11.5px;color:#5c5148;outline:none;min-width:0}
+.reset{border:none;background:none;color:var(--muted);font-size:11px;padding:4px 2px;margin-left:auto}
+.reset:hover{color:var(--red)}
+
+/* List */
+.list-head{display:flex;align-items:center;justify-content:space-between;padding:9px 17px 7px;font-size:11px;color:var(--muted);letter-spacing:.4px;background:var(--panel2);border-bottom:1px solid var(--line)}
+.list-head b{color:var(--ink);font-weight:600}
+#list{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#d7c7b2 transparent}
+#list::-webkit-scrollbar{width:7px}
+#list::-webkit-scrollbar-thumb{background:#d7c7b2;border-radius:8px}
+.prov-h{padding:9px 17px 4px;font-size:10.5px;color:#9a8a79;letter-spacing:1px;background:linear-gradient(180deg,rgba(250,246,238,.9),rgba(250,246,238,0));position:sticky;top:0;z-index:2;backdrop-filter:blur(4px)}
+.site{display:flex;gap:10px;align-items:flex-start;padding:9px 17px 9px 15px;border-bottom:1px solid #efe7da;cursor:pointer;border-left:3px solid transparent;transition:background .15s,border-color .15s}
+.site:hover{background:#fbf5ea}
+.site.active{background:#f7eadb;border-left-color:var(--red)}
+.site .pin-dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:0 0 10px;margin-top:5px;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 16%,transparent)}
+.site .txt{min-width:0;flex:1}
+.site .nm{font-size:12.5px;line-height:1.35;color:var(--ink);display:flex;gap:6px;align-items:baseline}
+.site .nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.site .nm em{font-style:normal;font-size:9.5px;color:#9c7b52;border:1px solid #e4d3bb;border-radius:4px;padding:0 4px;flex:0 0 auto;background:#fffaf1}
+.site .sub{font-size:10.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{padding:40px 22px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+.foot{padding:9px 16px;border-top:1px solid var(--line);background:var(--panel2);font-size:10px;color:#9a8a79;line-height:1.55}
+.foot a{color:var(--red)}
+.foot button{border:none;background:none;color:var(--red);padding:0;font-size:10px}
+
+/* Map */
+#map-wrap{position:relative;flex:1;min-width:0;height:100%}
+#map{position:absolute;inset:0;background:#e9e2d4}
+.leaflet-container{font-family:inherit}
+.leaflet-control-attribution{font-size:9.5px!important;background:rgba(255,253,248,.85)!important;color:#8a7c6e!important}
+.leaflet-control-attribution a{color:#8a5a3c!important}
+.leaflet-bar a{color:#4a3d33!important}
+.map-actions{position:absolute;top:16px;right:16px;z-index:650;display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.mbtn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border:1px solid rgba(120,95,70,.25);border-radius:9px;background:rgba(255,253,248,.94);backdrop-filter:blur(8px);color:#4a3d33;font-size:12px;box-shadow:0 4px 16px rgba(50,35,20,.13);transition:.15s}
+.mbtn:hover{background:#fff;border-color:#c9a98c;transform:translateY(-1px)}
+.mbtn .i{font-size:14px;line-height:1}
+.menu-btn{display:none}
+.legend{position:absolute;left:16px;bottom:26px;z-index:640;background:rgba(255,253,248,.94);backdrop-filter:blur(8px);border:1px solid rgba(120,95,70,.22);border-radius:10px;padding:9px 12px;box-shadow:0 4px 16px rgba(50,35,20,.12);font-size:10.5px;color:#65594e;line-height:1.9}
+.legend .lg-t{font-size:10px;color:#9a8a79;letter-spacing:1px;margin-bottom:3px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.hint{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:630;background:rgba(41,34,30,.82);color:#fff;border-radius:999px;padding:7px 14px;font-size:11px;letter-spacing:.3px;white-space:nowrap;opacity:1;transition:opacity .6s;pointer-events:none}
+.hint.hide{opacity:0}
+.locate-dot{width:14px;height:14px;border-radius:50%;background:#2f6f8f;border:3px solid #fff;box-shadow:0 0 0 6px rgba(47,111,143,.22),0 2px 6px rgba(0,0,0,.3)}
+
+/* Markers */
+.mao-icon{background:none!important;border:none!important}
+.pin{position:relative;width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11.5px;font-weight:700;background:var(--c);border:2px solid rgba(255,255,255,.96);box-shadow:0 2px 7px rgba(30,20,12,.38);transition:transform .15s ease}
+.pin:hover{transform:scale(1.16)}
+.pin.major{width:33px;height:33px;font-size:13.5px}
+.pin.major::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--c);opacity:.28;animation:pulse 2.6s infinite}
+@keyframes pulse{0%{transform:scale(.85);opacity:.38}70%{transform:scale(1.25);opacity:0}100%{opacity:0}}
+.cluster-wrap{background:none!important;border:none!important}
+.cluster{background:rgba(169,45,36,.93);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid #fff;box-shadow:0 4px 14px rgba(80,20,10,.35);font-size:12px}
+.cluster.c2{background:rgba(176,125,26,.93)}
+.cluster.c3{background:rgba(47,111,143,.93)}
+
+/* Popup */
+.leaflet-popup-content-wrapper{border-radius:12px;box-shadow:0 12px 40px rgba(40,25,12,.28);border:1px solid #e8dbc8;background:#fffdf8;padding:0}
+.leaflet-popup-content{margin:0;width:auto!important;min-width:250px;max-height:min(62vh,430px);overflow:auto}
+.leaflet-popup-tip{background:#fffdf8;border:1px solid #e8dbc8}
+.leaflet-popup-close-button{color:#9a8a79!important;font-size:20px!important;padding:6px 8px 0 0!important}
+.pop{padding:14px 16px 13px}
+.pop .kicker{font-size:10px;color:#9c7b52;letter-spacing:1px;margin-bottom:3px}
+.pop h3{margin:0 0 7px;font-family:"Songti SC","STSong","SimSun",serif;font-size:16.5px;line-height:1.35;color:#2a211b;padding-right:12px}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.badge{font-size:9.5px;padding:2px 6px;border-radius:4px;background:#f4ecdf;color:#7a6247;border:1px solid #e9dac4}
+.badge.b-bronze{background:#fbf1d7;color:#8a6110;border-color:#eed9a7}
+.badge.b-statue{background:#f9e7e3;color:#97281f;border-color:#edc9c2}
+.badge.b-slogan{background:#e9f2e9;color:#336b40;border-color:#cfe2d1}
+.badge.b-memorial{background:#e8f0f4;color:#285f7b;border-color:#cadde6}
+.pop p{margin:0 0 9px;font-size:12px;line-height:1.7;color:#5c5045}
+.pop .story{margin:0 0 10px;padding:9px 11px 10px;background:#fbf6ec;border:1px solid #eadcc8;border-left:3px solid var(--gold);border-radius:0 8px 8px 0}
+.pop .story .st-t{font-size:10px;letter-spacing:1.2px;color:#9c7b52;margin-bottom:4px}
+.pop .story .st-t::before{content:"◈";margin-right:4px;color:var(--gold)}
+.pop .story p{margin:0;font-size:11.8px;line-height:1.75;color:#55483d}
+.pop .meta{font-size:10.5px;color:#8b7c6d;border-top:1px dashed #e6d9c5;padding-top:7px;margin-bottom:9px;line-height:1.6}
+.pop .actions{display:flex;gap:6px;flex-wrap:wrap}
+.pop .actions a{font-size:10.5px;padding:4px 8px;border:1px solid #dfcfb8;border-radius:5px;background:#fffaf2;color:#7a4a2c;white-space:nowrap}
+.pop .actions a:hover{background:#f7eadb;text-decoration:none}
+
+/* Modal */
+#modal{position:fixed;inset:0;z-index:2000;background:rgba(30,22,16,.48);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px}
+#modal.open{display:flex}
+.modal-card{width:min(620px,100%);max-height:82vh;overflow:auto;background:#fffdf8;border-radius:14px;border:1px solid #e2d3be;box-shadow:0 24px 80px rgba(20,12,6,.35);padding:24px 26px}
+.modal-card h2{margin:0 0 4px;font-family:"Songti SC","STSong","SimSun",serif;font-size:22px}
+.modal-card .sub{font-size:11px;color:#9a8a79;margin-bottom:16px;letter-spacing:.5px}
+.modal-card h4{margin:16px 0 6px;font-size:13px;color:#6b5744}
+.modal-card p,.modal-card li{font-size:12px;line-height:1.8;color:#5c5045;margin:0 0 6px}
+.modal-card ul{padding-left:18px;margin:0 0 8px}
+.modal-card .close{float:right;border:none;background:#f4ecdf;color:#7a6247;width:30px;height:30px;border-radius:50%;font-size:16px;line-height:1}
+.src-list{display:grid;gap:5px;font-size:11px}
+.src-list a{color:#8a4b2f;word-break:break-all}
+.warn{background:#fbf1dc;border:1px solid #ecd8ab;border-radius:8px;padding:10px 12px;font-size:11.5px;line-height:1.7;color:#725a34}
+
+/* Toast */
+#toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);z-index:3000;background:rgba(41,34,30,.9);color:#fff;padding:9px 16px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.25s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Mobile */
+@media(max-width:860px){
+  :root{--sw:min(88vw,370px)}
+  #sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-102%);box-shadow:18px 0 60px rgba(30,18,8,.25)}
+  #sidebar.open{transform:translateX(0)}
+  body.sidebar-collapsed #sidebar{margin-left:0;transform:translateX(-102%)}
+  .menu-btn{display:inline-flex}
+  .legend{display:none}
+  .map-actions{top:12px;right:12px}
+  .mbtn{height:32px;padding:0 9px;font-size:11px}
+  .mbtn .label{display:none}
+  .hint{display:none}
+  #scrim{position:fixed;inset:0;background:rgba(25,18,12,.35);z-index:450;display:none}
+  #scrim.show{display:block}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar" aria-label="地点列表">
+    <div class="brand">
+      <div class="seal">毛</div>
+      <div>
+        <h1>毛泽东塑像 · 铜像 · 标语</h1>
+        <p>山河印记 · 中国大陆交互地图</p>
+        <div class="stats">
+          <span><b id="st-total">0</b>处地点</span>
+          <span><b id="st-prov">0</b>省区市</span>
+          <span><b id="st-major">0</b>处重点</span>
+          <span><b id="st-story">0</b>段故事</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search">
+        <span class="ico">⌕</span>
+        <input id="q" type="search" placeholder="搜索地点、城市、故事…" autocomplete="off" aria-label="搜索">
+        <kbd>/</kbd>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="selects">
+        <select id="prov" aria-label="按省份筛选"></select>
+        <select id="era" aria-label="按年代筛选">
+          <option value="all">全部年代</option>
+          <option value="pre1960">1950年代及以前</option>
+          <option value="1960">1960年代</option>
+          <option value="1970">1970年代</option>
+          <option value="1980">1980—1999</option>
+          <option value="2000">2000年以后</option>
+          <option value="unknown">年代不详</option>
+        </select>
+        <button class="reset" id="reset">重置</button>
+      </div>
+    </div>
+
+    <div class="list-head"><span>地点列表</span><span><b id="st-shown">0</b> 处符合条件</span></div>
+    <div id="list"></div>
+
+    <div class="foot">
+      <a href="index.html">首页</a> · <a href="stories.html">故事档案</a> · <a href="about.html">关于与来源</a> · <a href="https://github.com/e2168708352-web/mao-memorial-map" target="_blank" rel="noopener">GitHub</a>
+      <br>非官方完整名录 · 部分点位为校园/广场大致位置 · 出行前请核实开放信息
+      <br><button id="about">关于数据与来源 →</button>
+    </div>
+  </aside>
+
+  <div id="scrim"></div>
+
+  <main id="map-wrap">
+    <div id="map"></div>
+    <div class="map-actions">
+      <a class="mbtn" href="index.html" title="返回首页"><span class="i">←</span><span class="label">首页</span></a>
+      <button class="mbtn menu-btn" id="menu" aria-label="打开列表"><span class="i">☰</span><span class="label">列表</span></button>
+      <button class="mbtn" id="fit" title="查看全部"><span class="i">⤢</span><span class="label">全览</span></button>
+      <button class="mbtn" id="random" title="随机看一处"><span class="i">✦</span><span class="label">随机</span></button>
+      <button class="mbtn" id="locate" title="定位到我"><span class="i">◎</span><span class="label">定位</span></button>
+    </div>
+    <div class="legend">
+      <div class="lg-t">图例</div>
+      <div><i style="background:#a92d24"></i>塑像　<i style="background:#b07d1a"></i>铜像</div>
+      <div><i style="background:#2f6f8f"></i>纪念地　<i style="background:#3f7d4e"></i>标语题词</div>
+    </div>
+    <div class="hint" id="hint">滚轮缩放 · 拖拽平移 · 点击标记读背后的故事</div>
+  </main>
+</div>
+
+<div id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <button class="close" id="modal-close" aria-label="关闭">×</button>
+    <h2 id="modal-title">关于这份地图</h2>
+    <div class="sub">数据版本 2026-11 · 民间整理，仅供参观与研究参考</div>
+    <div class="warn">这不是官方完整名录。公开资料中没有任何一份“全国现存毛主席塑像”权威统计；本图按公开报道、校方资料与地方文物信息整理，难免遗漏或过时。塑像可能被迁移、拆除或修缮，出发前请以现场和官方信息为准。故事中的年代、人物与细节也可能有不同版本。</div>
+    <h4>收录范围</h4>
+    <p>中国大陆境内公开可见的毛泽东室外塑像、铜像、纪念场馆/故居，以及毛泽东时代相关标语、题词遗存。重点收录 1960—1970 年代建造、目前仍存的大型室外塑像；校园塑像主要依据 2018 年“35 所大学”名单，部分学校可能在此后调整。甘肃、西藏暂未收录到可核实的现存大型室外塑像点位，地图留空，不代表当地一定没有。</p>
+    <h4>背后的故事</h4>
+    <p>每个地点都配有一段“背后的故事”，侧重人物、事件与地方记忆，而不是塑像尺寸。故事依据公开报道、校史、地方志和纪念馆展陈整理；凡有不同说法或民间传说的，文中用“相传”“当地流传”等字样提示。部分校园、军校点位公开资料很少，只写到可核实的大背景，不代表全部细节。</p>
+    <h4>坐标与年代</h4>
+    <p>坐标为 WGS-84 近似值，校园、广场类点位为大致位置；底图使用高德地图（GCJ-02），脚本已做坐标纠偏。若用于实地导航，请以导航软件搜索结果为准。年代字段对塑像一般指落成年代，对旧址、纪念馆则指相关历史年代，仅作浏览与筛选参考。</p>
+    <h4>主要参考</h4>
+    <div class="src-list">
+      <a href="https://www.sohu.com/a/122548284_449841" target="_blank" rel="noopener">搜狐：全国各地的毛主席塑像（2016）</a>
+      <a href="https://www.sohu.com/a/235186505_557768" target="_blank" rel="noopener">搜狐：盘点中国至今仍耸立的那些毛主席雕像（2018）</a>
+      <a href="https://www.hunantoday.cn/news/xhn/201803/16144100.html" target="_blank" rel="noopener">华声在线：树立毛主席雕像的35所大学（2018）</a>
+      <a href="https://www.chinanews.com.cn/sh/2013/12-10/5601814.shtml" target="_blank" rel="noopener">中新网：济南尚存5尊大型毛泽东塑像（2013）</a>
+      <a href="https://baijiahao.baidu.com/s?id=1647705833452008923" target="_blank" rel="noopener">西宁晚报：全国最大铁铸毛主席像修缮（2019）</a>
+      <a href="http://culture.people.com.cn/n/2014/0310/c22219-24585102.html" target="_blank" rel="noopener">人民网：武汉剧院毛泽东雕像（2014）</a>
+      <a href="https://travel.sohu.com/a/1011975442_121123814" target="_blank" rel="noopener">搜狐：抚顺工人文化宫旧址毛主席塑像</a>
+      <a href="https://wwj.zhengzhou.gov.cn/" target="_blank" rel="noopener">郑州市文物局：毛泽东塑像（省保）</a>
+    </div>
+    <h4>使用提示</h4>
+    <p>点击左侧列表或地图标记查看详情；可用分类、省份、年代和关键词组合筛选。标记颜色代表主要类别，一个地点可能同时具有多种属性（如“铜像+纪念地”）。</p>
+    <p><a href="stories.html">浏览全部 99 段故事 →</a>　<a href="about.html">完整数据说明与来源 →</a></p>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="https://cdn.staticfile.org/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.staticfile.org/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+<script>
+const CATS = {
+  statue:  {name:"塑像", short:"塑", color:"#a92d24"},
+  bronze:  {name:"铜像", short:"铜", color:"#b07d1a"},
+  memorial:{name:"纪念地", short:"馆", color:"#2f6f8f"},
+  slogan:  {name:"标语题词", short:"语", color:"#3f7d4e"}
+};
+const SITES = [
+  {id:"tiananmen", n:"天安门城楼", p:"北京", c:"东城区", lat:39.9087, lng:116.3975, cat:["slogan"], y:1950, m:"建筑标语", major:true,
+   d:"城楼两侧悬挂“中华人民共和国万岁”“世界人民大团结万岁”，是毛泽东时代沿用至今的国家象征性标语。"},
+  {id:"xinhuamen", n:"中南海新华门", p:"北京", c:"西城区", lat:39.9036, lng:116.3833, cat:["slogan"], y:null, m:"影壁题词",
+   d:"新华门内影壁为毛泽东手书“为人民服务”，是中国最知名的毛泽东题词遗存之一。"},
+  {id:"mao-memorial", n:"毛主席纪念堂", p:"北京", c:"东城区", lat:39.9028, lng:116.3917, cat:["memorial"], y:1977, m:"纪念建筑", major:true,
+   d:"天安门广场南侧，1977年建成。北大厅内有3.45米高的汉白玉毛泽东坐像，瞻仰区安放水晶棺。"},
+  {id:"cugb", n:"中国地质大学（北京）", p:"北京", c:"海淀区", lat:39.9997, lng:116.3479, cat:["statue"], y:1967, m:"水泥",
+   d:"1967年落成的早期毛泽东塑像，与北京科技大学塑像隔学院路相望，是北京高校中保存较早的一尊。"},
+  {id:"ustb", n:"北京科技大学", p:"北京", c:"海淀区", lat:39.9902, lng:116.3550, cat:["statue"], y:1967, m:"水泥",
+   d:"原北京钢铁学院毛泽东塑像，1967年落成，与对面的中国地质大学塑像形成“面对面”格局。"},
+  {id:"bupt", n:"北京邮电大学", p:"北京", c:"海淀区", lat:39.9620, lng:116.3590, cat:["statue"], y:null, m:"塑像",
+   d:"校园内毛泽东塑像，属北京高校保存的早期塑像之一。"},
+  {id:"buct", n:"北京化工大学", p:"北京", c:"朝阳区", lat:39.9685, lng:116.4230, cat:["statue"], y:null, m:"塑像",
+   d:"校园内毛泽东塑像，位于北三环东路校区。"},
+  {id:"bjtu", n:"北京交通大学", p:"北京", c:"海淀区", lat:39.9510, lng:116.3370, cat:["statue"], y:null, m:"塑像",
+   d:"校园内毛泽东塑像，属北京高校早期塑像之一。"},
+  {id:"bsu", n:"北京体育大学", p:"北京", c:"海淀区", lat:40.0030, lng:116.3200, cat:["statue"], y:null, m:"塑像",
+   d:"校园内毛泽东塑像，位于信息路校区。"},
+  {id:"cau", n:"中国农业大学", p:"北京", c:"海淀区", lat:40.0030, lng:116.3530, cat:["statue"], y:null, m:"塑像",
+   d:"东校区校园内毛泽东塑像，邻近清华东路。"},
+  {id:"ndu", n:"国防大学", p:"北京", c:"海淀区", lat:40.0080, lng:116.2650, cat:["statue"], y:null, m:"塑像",
+   d:"红山口校区毛泽东塑像。军事院校一般不对外开放，参观前需确认。"},
+  {id:"mil-museum", n:"中国人民革命军事博物馆", p:"北京", c:"海淀区", lat:39.9075, lng:116.3215, cat:["slogan"], y:1959, m:"题写馆名",
+   d:"馆名由毛泽东题写，建筑顶部“中国人民革命军事博物馆”字样沿用至今。"},
+
+  {id:"tjjt", n:"陆军军事交通学院", p:"天津", c:"河东区", lat:39.1300, lng:117.2500, cat:["statue"], y:null, m:"塑像",
+   d:"原军事交通学院校园内毛泽东塑像。军校营区通常不对外开放。"},
+
+  {id:"sjz-plaza", n:"石家庄人民广场", p:"河北", c:"石家庄", lat:38.0450, lng:114.5150, cat:["statue"], y:1967, m:"水泥", major:true,
+   d:"1967年建于原石家庄第一工人文化宫前。石家庄地区同式样毛泽东塑像曾有7尊，此尊为市中心地标。"},
+  {id:"sjztd", n:"石家庄铁道大学", p:"河北", c:"石家庄", lat:38.0780, lng:114.4920, cat:["statue"], y:null, m:"塑像",
+   d:"校园内毛泽东塑像，属河北高校保存的早期塑像之一。"},
+  {id:"xibaipo", n:"西柏坡纪念馆", p:"河北", c:"石家庄·平山", lat:38.3210, lng:113.9510, cat:["bronze","memorial"], y:null, m:"铜像群", major:true,
+   d:"西柏坡纪念馆广场立有毛泽东、周恩来、朱德、刘少奇、任弼时五大书记铜像，是“新中国从这里走来”的红色地标。"},
+
+  {id:"sxu", n:"山西大学", p:"山西", c:"太原", lat:37.8000, lng:112.5780, cat:["statue"], y:null, m:"塑像",
+   d:"坞城校区毛泽东塑像，属山西高校保存的早期塑像。"},
+  {id:"dazhai", n:"大寨", p:"山西", c:"晋中·昔阳", lat:37.5500, lng:113.7200, cat:["slogan"], y:1964, m:"标语景观", major:true,
+   d:"“农业学大寨”运动发源地。虎头山、大寨展览馆一带仍保留毛泽东时代标语与纪念景观。"},
+
+  {id:"baotou", n:"包头原冶金二建礼堂前", p:"内蒙古", c:"包头", lat:40.6570, lng:109.8400, cat:["statue"], y:1967, m:"水泥",
+   d:"原中国冶金第二建设公司礼堂前毛泽东塑像，执帽挥手式，1967年建成，现为包头市不可移动文物。"},
+
+  {id:"shenyang", n:"沈阳中山广场", p:"辽宁", c:"沈阳", lat:41.7966, lng:123.4105, cat:["statue"], y:1969, m:"水泥群雕", major:true,
+   d:"中山广场《毛泽东思想胜利万岁》群雕，毛泽东立像与58个人物组成，1969年建成，是新中国第一件超大型城市雕塑。"},
+  {id:"dlut", n:"大连理工大学", p:"辽宁", c:"大连", lat:38.8830, lng:121.5250, cat:["statue"], y:null, m:"塑像",
+   d:"凌工路校区毛泽东塑像，属辽宁高校保存的早期塑像。"},
+  {id:"fuxin", n:"阜新解放广场", p:"辽宁", c:"阜新", lat:42.0210, lng:121.6700, cat:["bronze"], y:1969, m:"铜像", major:true,
+   d:"阜新解放广场毛泽东铜像，是现存早期大型毛泽东雕像中少见的铜质像；建像时曾发动全市捐献铜金属。"},
+  {id:"fushun", n:"抚顺工人文化宫旧址", p:"辽宁", c:"抚顺", lat:41.8589, lng:123.9014, cat:["statue"], y:1968, m:"水泥",
+   d:"原抚顺工人文化宫旧址，像身约5米、底座约3米。实测坐标东经123°54′5″、北纬41°51′32″，基本保持原位。",
+   src:"https://travel.sohu.com/a/1011975442_121123814"},
+
+  {id:"changchun", n:"长春胜利公园", p:"吉林", c:"长春", lat:43.8960, lng:125.3230, cat:["statue"], y:null, m:"塑像",
+   d:"胜利公园内毛泽东塑像，冬季园内常以天安门造型冰灯装点。"},
+
+  {id:"haerbin-aijian", n:"哈尔滨爱建社区城市源广场", p:"黑龙江", c:"哈尔滨", lat:45.7660, lng:126.5980, cat:["statue"], y:null, m:"水泥",
+   d:"原哈尔滨车辆厂旧址。塑像在1980年代被整体拆除并埋入地下，2002年开发建设时出土重立。"},
+  {id:"hrbeu", n:"哈尔滨工程大学", p:"黑龙江", c:"哈尔滨", lat:45.7760, lng:126.6730, cat:["statue"], y:null, m:"塑像",
+   d:"校园内毛泽东塑像，属哈尔滨高校保存的早期塑像。"},
+  {id:"qqhe", n:"齐齐哈尔工人文化宫", p:"黑龙江", c:"齐齐哈尔", lat:47.3500, lng:123.9200, cat:["statue"], y:null, m:"塑像",
+   d:"齐齐哈尔市区现存7座毛泽东塑像，此点为龙沙区工人文化宫一处；其余分布在厂区、学校等处。"},
+  {id:"youyi", n:"友谊县龙谊集团", p:"黑龙江", c:"双鸭山·友谊", lat:46.7670, lng:131.8080, cat:["statue"], y:null, m:"水泥",
+   d:"原国营友谊农场（龙谊集团）办公楼前街心绿地，与1967年清华版塑像样式相同。"},
+
+  {id:"fudan", n:"复旦大学", p:"上海", c:"杨浦区", lat:31.2989, lng:121.5033, cat:["statue"], y:null, m:"塑像", major:true,
+   d:"邯郸校区毛泽东塑像，上海高校保存的早期塑像之一，常出现在毕业照与校园导览中。"},
+  {id:"tongji", n:"同济大学", p:"上海", c:"杨浦区", lat:31.2820, lng:121.5060, cat:["statue"], y:null, m:"塑像",
+   d:"四平路校区毛泽东塑像，属上海高校早期塑像。"},
+  {id:"ecust", n:"华东理工大学", p:"上海", c:"徐汇区", lat:31.1430, lng:121.4260, cat:["statue"], y:null, m:"塑像",
+   d:"梅陇路校区毛泽东塑像，属上海高校早期塑像。"},
+  {id:"usst", n:"上海理工大学", p:"上海", c:"杨浦区", lat:31.2850, lng:121.5150, cat:["statue"], y:null, m:"塑像",
+   d:"军工路校区毛泽东塑像，属上海高校早期塑像。"},
+  {id:"ecnu", n:"华东师范大学", p:"上海", c:"普陀区", lat:31.2280, lng:121.4030, cat:["statue"], y:null, m:"塑像",
+   d:"中山北路校区毛泽东塑像，属上海高校早期塑像。"},
+  {id:"sh-mao-home", n:"上海毛泽东旧居", p:"上海", c:"静安区", lat:31.2300, lng:121.4660, cat:["memorial"], y:1924, m:"旧居陈列馆",
+   d:"茂名北路120弄7号（甲秀里），1924年毛泽东在上海的寓所，现为毛泽东旧居陈列馆。"},
+
+  {id:"nanjing-oct", n:"南京十月村毛主席塑像广场", p:"江苏", c:"南京·栖霞", lat:32.1360, lng:118.9300, cat:["statue"], y:1967, m:"水泥", major:true,
+   d:"栖霞大道北侧与新仙东路交会处。1967年十月公社村民集资建造，是南京现存4座毛泽东雕像之一，市级文物保护单位，入选江苏省红色地名。"},
+  {id:"zju", n:"浙江大学玉泉校区", p:"浙江", c:"杭州", lat:30.2630, lng:120.1210, cat:["statue"], y:null, m:"塑像",
+   d:"玉泉校区毛泽东塑像，属浙江高校保存的早期塑像。"},
+  {id:"xiaoying", n:"小营巷纪念馆", p:"浙江", c:"杭州", lat:30.2530, lng:120.1740, cat:["memorial"], y:1958, m:"纪念馆",
+   d:"1958年毛泽东视察杭州小营巷，现为毛泽东视察小营巷纪念馆，是爱国卫生运动的重要纪念地。"},
+
+  {id:"ahmu", n:"安徽医科大学", p:"安徽", c:"合肥", lat:31.8500, lng:117.2600, cat:["statue"], y:null, m:"塑像",
+   d:"梅山路校区毛泽东塑像，属安徽高校保存的早期塑像。"},
+  {id:"ahly", n:"安徽旅游职业学院", p:"安徽", c:"阜阳·颍上", lat:32.6290, lng:116.2590, cat:["statue"], y:null, m:"塑像",
+   d:"2018年“35所大学”名单收录。主校区位于阜阳市颍上县，校园内有毛泽东塑像；具体位置与现状建议到校前核实。"},
+
+  {id:"fuzhou", n:"福州五一广场", p:"福建", c:"福州", lat:26.0780, lng:119.3030, cat:["statue"], y:1969, m:"水泥", major:true,
+   d:"于山堂前、五一广场北侧的毛泽东塑像与观礼台，是福州市中心地标；近年曾对塑像和观礼台进行加固修复。"},
+  {id:"gutian", n:"古田会议旧址", p:"福建", c:"龙岩·上杭", lat:25.2250, lng:116.8250, cat:["slogan","memorial"], y:1929, m:"旧址标语", major:true,
+   d:"古田会议旧址。会址对面山体保留“古田会议永放光芒”大型标语，设有古田会议纪念馆与毛泽东铜像。"},
+
+  {id:"jinggangshan", n:"井冈山茨坪", p:"江西", c:"吉安·井冈山", lat:26.5730, lng:114.1660, cat:["bronze","memorial","slogan"], y:1993, m:"铜像", major:true,
+   d:"茨坪毛泽东铜像与井冈山革命博物馆。“星星之火，可以燎原”是井冈山最具代表性的毛泽东语录景观。"},
+  {id:"ruijin", n:"瑞金叶坪", p:"江西", c:"赣州·瑞金", lat:25.9300, lng:116.0500, cat:["memorial"], y:null, m:"革命旧址",
+   d:"叶坪革命旧址群与红军广场，中华苏维埃共和国临时中央政府旧址所在地，是中央苏区核心纪念地。"},
+  {id:"anyuan", n:"安源毛泽东铜像广场", p:"江西", c:"萍乡·安源", lat:27.6150, lng:113.8700, cat:["bronze","memorial"], y:null, m:"铜像",
+   d:"安源煤矿厂区旁的毛泽东铜像广场，纪念1921—1922年毛泽东到安源考察并组织工人运动。"},
+  {id:"tonggu", n:"秋收起义铜鼓纪念地", p:"江西", c:"宜春·铜鼓", lat:28.5200, lng:114.3700, cat:["bronze","memorial"], y:null, m:"铜像",
+   d:"秋收起义铜鼓纪念地广场立有青年毛泽东铜像，纪念1927年毛泽东在铜鼓领导秋收起义。"},
+  {id:"wenjiashi", n:"秋收起义文家市会师纪念馆", p:"湖南", c:"长沙·浏阳", lat:28.0500, lng:113.7500, cat:["memorial"], y:null, m:"会师旧址",
+   d:"秋收起义文家市会师纪念馆，会师广场立有大型红旗雕塑；是秋收起义部队会师转兵之地。"},
+
+  {id:"jinan-chixia", n:"济南赤霞广场", p:"山东", c:"济南", lat:36.6400, lng:116.9900, cat:["statue"], y:1968, m:"水泥", major:true,
+   d:"英雄山赤霞广场毛泽东塑像，1999年12月由山东省工业展览馆迁至此处，像高12.26米。",
+   src:"https://www.chinanews.com.cn/sh/2013/12-10/5601814.shtml"},
+  {id:"sdnu", n:"山东师范大学", p:"山东", c:"济南", lat:36.6600, lng:117.0450, cat:["statue"], y:1967, m:"水泥", major:true,
+   d:"东方红广场毛泽东塑像，1967年10月落成，通高约16米，是济南高校的标志性景观。"},
+  {id:"sph", n:"山东省立医院", p:"山东", c:"济南", lat:36.6600, lng:117.0000, cat:["statue"], y:null, m:"塑像",
+   d:"医院院内毛泽东塑像，济南市区现存5尊大型文革时期塑像之一。"},
+  {id:"jingba", n:"济南经八路小学", p:"山东", c:"济南", lat:36.6500, lng:117.0100, cat:["statue"], y:null, m:"塑像",
+   d:"校园内（原经八路一小）毛泽东塑像，济南市区现存大型塑像之一，像前有影壁。"},
+  {id:"beiyuan", n:"济南市北园中学", p:"山东", c:"济南", lat:36.6900, lng:117.0200, cat:["statue","slogan"], y:1967, m:"塑像+标语墙",
+   d:"原北园人民公社所在地。1958年毛泽东视察北园，1967年建毛泽东塑像与标语墙，现为北园中学校园。"},
+  {id:"saas", n:"山东省农业科学院", p:"山东", c:"济南", lat:36.6900, lng:117.0800, cat:["bronze"], y:2013, m:"铜像",
+   d:"山东省农业科学院毛泽东铜像，2013年12月26日揭幕，像高4.5米，纪念毛泽东两次视察省农科院。"},
+
+  {id:"zz-plaza", n:"郑州人民广场", p:"河南", c:"郑州", lat:34.7600, lng:113.6700, cat:["statue"], y:1968, m:"水泥", major:true,
+   d:"金水路与人民路交叉口西南角。像高12.26米、基座5.16米，水泥质，河南省重点文物保护单位。"},
+  {id:"luoyang", n:"中国一拖集团", p:"河南", c:"洛阳", lat:34.6670, lng:112.3910, cat:["statue"], y:1968, m:"水泥", major:true,
+   d:"第一拖拉机制造厂门前毛泽东塑像，1968年国庆前夕建成。头顶和食指装有不锈钢避雷针，表面涂有机硅。"},
+  {id:"nanyang", n:"南阳柴油机厂旧址", p:"河南", c:"南阳", lat:33.0030, lng:112.5280, cat:["statue"], y:1967, m:"金属",
+   d:"1967年铸造的毛泽东塑像。1980年代拆除后放置仓库，1999年重新立在职工住宅区门前。"},
+  {id:"hebi", n:"鹤壁红旗街", p:"河南", c:"鹤壁", lat:35.8975, lng:114.1845, cat:["statue"], y:1968, m:"水泥", major:true,
+   d:"山城区红旗街与长风路交叉口，1968年建成，通高12.26米。是鹤壁老城区的地标，也是豫北少见的街头大型毛泽东塑像。"},
+  {id:"nanjiecun", n:"临颍南街村", p:"河南", c:"漯河·临颍", lat:33.8000, lng:113.9500, cat:["statue","slogan"], y:1993, m:"雕像+标语", major:true,
+   d:"南街村东方红广场，1993年立毛泽东雕像，基座一侧写着“毛泽东不是神，毛泽东思想胜过神”。村内保留大量毛泽东时代标语、语录墙与宣传画。"},
+  {id:"henan-normal", n:"河南师范大学", p:"河南", c:"新乡", lat:35.3170, lng:113.9100, cat:["statue"], y:null, m:"塑像",
+   d:"建设东路校区毛泽东塑像，属河南高校保存的早期塑像。"},
+  {id:"hongqiqu", n:"红旗渠纪念馆", p:"河南", c:"安阳·林州", lat:36.0830, lng:113.8160, cat:["slogan","memorial"], y:1960, m:"标语/纪念馆",
+   d:"红旗渠纪念馆与青年洞景区。“自力更生、艰苦奋斗”是红旗渠精神的标志性口号，也是毛泽东时代典型标语。"},
+
+  {id:"wuhan-theatre", n:"武汉剧院", p:"湖北", c:"武汉", lat:30.5920, lng:114.2790, cat:["statue"], y:1968, m:"水泥", major:true,
+   d:"武汉剧院门前毛泽东雕像，1968年落成。当年同批建造的三座中，仅存这一座。",
+   src:"http://culture.people.com.cn/n/2014/0310/c22219-24585102.html"},
+  {id:"whu", n:"武汉大学", p:"湖北", c:"武汉", lat:30.5400, lng:114.3600, cat:["statue"], y:null, m:"塑像",
+   d:"珞珈山校园内毛泽东塑像，属武汉高校保存的早期塑像。"},
+  {id:"hust", n:"华中科技大学", p:"湖北", c:"武汉", lat:30.5130, lng:114.4200, cat:["statue"], y:null, m:"塑像",
+   d:"珞喻路校区毛泽东塑像，属武汉高校保存的早期塑像。"},
+  {id:"wuhan-peasant", n:"武昌中央农民运动讲习所", p:"湖北", c:"武汉", lat:30.5450, lng:114.3050, cat:["statue","memorial"], y:1927, m:"雕像",
+   d:"毛泽东1927年在此主持中央农民运动讲习所，旧址现为纪念馆，大操场立有毛泽东雕像。"},
+
+  {id:"shaoshan-bronze", n:"韶山毛泽东铜像广场", p:"湖南", c:"湘潭·韶山", lat:27.9105, lng:112.4920, cat:["bronze","memorial"], y:1993, m:"青铜", major:true,
+   d:"1993年12月揭幕。铜像高6米、基座4.1米，总高10.1米，重3.7吨，是韶山红色旅游的核心地标。"},
+  {id:"shaoshan-home", n:"韶山毛泽东故居", p:"湖南", c:"湘潭·韶山", lat:27.9116, lng:112.4895, cat:["memorial"], y:1893, m:"故居", major:true,
+   d:"韶山冲上屋场，土木结构“凹”字形农舍，毛泽东出生与成长地，全国重点文物保护单位。"},
+  {id:"juzizhou", n:"橘子洲青年毛泽东雕塑", p:"湖南", c:"长沙", lat:28.1783, lng:112.9615, cat:["statue"], y:2009, m:"花岗岩", major:true,
+   d:"2009年12月26日落成。高32米、长83米、宽41米，由8000多块永定红花岗岩拼接，是全国最大的青年毛泽东艺术雕塑。"},
+  {id:"hnu", n:"湖南大学东方红广场", p:"湖南", c:"长沙", lat:28.1786, lng:112.9475, cat:["statue"], y:1968, m:"水泥", major:true,
+   d:"湖南大学东方红广场毛泽东塑像，通高19.76米，是长沙最具代表性的校园毛泽东像。"},
+  {id:"cs-museum", n:"长沙市博物馆", p:"湖南", c:"长沙", lat:28.2030, lng:112.9820, cat:["statue"], y:null, m:"塑像",
+   d:"清水塘长沙市博物馆院内毛泽东塑像，邻近中共湘区委员会旧址。"},
+  {id:"xtu", n:"湘潭大学", p:"湖南", c:"湘潭", lat:27.8870, lng:112.9280, cat:["bronze"], y:null, m:"铜像", major:true,
+   d:"湘潭大学南门毛泽东铜像。毛泽东亲笔题写“湘潭大学”校名，铜像是校园标志性景观。"},
+  {id:"nudt", n:"国防科技大学", p:"湖南", c:"长沙", lat:28.2200, lng:113.0000, cat:["statue"], y:null, m:"塑像",
+   d:"校园内毛泽东塑像。军校营区通常不对外开放。"},
+  {id:"hunan-1st-normal", n:"湖南第一师范", p:"湖南", c:"长沙", lat:28.1800, lng:112.9720, cat:["memorial"], y:null, m:"旧址",
+   d:"毛泽东青年时期求学与工作地，旧址现为纪念馆。校园与周边是长沙经典的红色研学线路。"},
+  {id:"gz-peasant", n:"广州农民运动讲习所", p:"广东", c:"广州", lat:23.1290, lng:113.2760, cat:["memorial"], y:1926, m:"革命旧址", major:true,
+   d:"毛泽东1926年在此主办第六届农民运动讲习所，旧址现为纪念馆，是广州重要的红色史迹。"},
+
+  {id:"nanning", n:"毛主席接见广西各族人民纪念馆", p:"广西", c:"南宁", lat:22.8230, lng:108.3270, cat:["memorial"], y:1978, m:"纪念馆",
+   d:"南宁人民公园内，1978年建成，记录1958年毛泽东在南宁接见广西各族群众的史事。"},
+
+  {id:"danzhou", n:"儋州白马井毛泽东铜像", p:"海南", c:"儋州", lat:19.7000, lng:109.2000, cat:["bronze"], y:1968, m:"铜像",
+   d:"原广东省南海渔业总公司旧址。1968年立毛泽东铜像，是海南少见的早期毛泽东铜像。"},
+
+  {id:"cqu", n:"重庆大学", p:"重庆", c:"沙坪坝区", lat:29.5650, lng:106.4600, cat:["statue"], y:null, m:"塑像",
+   d:"A区校园内毛泽东塑像，属重庆高校保存的早期塑像。"},
+  {id:"swu", n:"西南大学", p:"重庆", c:"北碚区", lat:29.8250, lng:106.4250, cat:["statue"], y:null, m:"塑像",
+   d:"北碚校区毛泽东塑像，属重庆高校保存的早期塑像。"},
+  {id:"cqmu", n:"重庆医科大学", p:"重庆", c:"渝中区", lat:29.5350, lng:106.5050, cat:["statue"], y:null, m:"塑像",
+   d:"袁家岗校区毛泽东塑像，属重庆高校保存的早期塑像。"},
+  {id:"cq-industrial", n:"重庆工业博物馆", p:"重庆", c:"大渡口区", lat:29.4410, lng:106.4820, cat:["statue"], y:null, m:"水泥",
+   d:"馆内毛泽东水泥塑像，2014年由原址整体搬迁而来，是重庆工业遗产保护的代表性案例。"},
+  {id:"guiyuan", n:"重庆桂园", p:"重庆", c:"渝中区", lat:29.5600, lng:106.5500, cat:["memorial"], y:1945, m:"旧址",
+   d:"重庆谈判期间毛泽东寓所，著名的《双十协定》在桂园客厅签署。中山四路一带还有曾家岩、周公馆等旧址。"},
+
+  {id:"chengdu", n:"成都天府广场", p:"四川", c:"成都", lat:30.6570, lng:104.0657, cat:["statue"], y:1969, m:"汉白玉", major:true,
+   d:"天府广场毛泽东雕像，1969年落成，高13米。背后原“毛泽东思想胜利万岁展览馆”现为四川科技馆。"},
+  {id:"scu", n:"四川大学", p:"四川", c:"成都", lat:30.6300, lng:104.0830, cat:["statue"], y:null, m:"塑像",
+   d:"望江校区毛泽东塑像，属四川高校保存的早期塑像。"},
+  {id:"panzhihua", n:"攀枝花中国三线建设博物馆", p:"四川", c:"攀枝花", lat:26.5800, lng:101.7000, cat:["slogan","memorial"], y:1960, m:"标语/博物馆",
+   d:"三线建设专题博物馆，展陈中可见“备战备荒为人民”等三线建设时期口号，是理解毛泽东时代工业布局的重要场所。"},
+
+  {id:"gy-plaza", n:"贵阳人民广场", p:"贵州", c:"贵阳", lat:26.5720, lng:106.7100, cat:["statue"], y:1968, m:"水泥", major:true,
+   d:"1968年12月26日完工，像高12.26米、像座7.1米。贵阳现存大型毛泽东塑像5尊，此尊最具代表性。"},
+  {id:"gzu", n:"贵州大学", p:"贵州", c:"贵阳", lat:26.4300, lng:106.6600, cat:["statue"], y:null, m:"塑像",
+   d:"花溪北校区毛泽东塑像，属贵州高校保存的早期塑像（2018年高校名单收录）。"},
+  {id:"gznu", n:"贵州师范大学", p:"贵州", c:"贵阳", lat:26.5900, lng:106.7200, cat:["statue"], y:null, m:"塑像",
+   d:"宝山校区毛泽东塑像，属贵州高校保存的早期塑像。"},
+  {id:"duyun", n:"都匀原发电厂", p:"贵州", c:"黔南·都匀", lat:26.2590, lng:107.5180, cat:["statue"], y:null, m:"水泥仿铜",
+   d:"原都匀发电厂广场毛泽东塑像，钢筋水泥、石块及镀铜材料建成。2016年报道时仍在原址，现状待核实。"},
+  {id:"kaili", n:"凯里鸭塘三线军工厂", p:"贵州", c:"黔东南·凯里", lat:26.5500, lng:107.9300, cat:["statue"], y:null, m:"塑像",
+   d:"原三线军工厂旧址毛泽东塑像。工厂搬迁后塑像留在原地，现状待核实。"},
+  {id:"zunyi", n:"遵义会议会址", p:"贵州", c:"遵义", lat:27.6940, lng:106.9210, cat:["memorial"], y:1935, m:"革命旧址", major:true,
+   d:"遵义会议会址与纪念馆。会址门楼悬挂毛泽东手书“遵义会议会址”匾额，是长征途中最重要的历史转折点。"},
+
+  {id:"lijiang", n:"丽江红太阳广场", p:"云南", c:"丽江", lat:26.8766, lng:100.2327, cat:["statue"], y:1969, m:"水泥", major:true,
+   d:"1969年10月1日建成，像高7.1米、基座5.16米，总高12.26米。公开报道称其为全国保存最完整的早期毛泽东塑像之一。"},
+
+  {id:"yanan-museum", n:"延安革命纪念馆", p:"陕西", c:"延安", lat:36.6360, lng:109.4670, cat:["bronze","memorial"], y:1997, m:"铜像", major:true,
+   d:"纪念馆广场毛泽东铜像由程允贤设计，1997年落成，像高5米、连基座通高8.15米，基座刻“毛泽东在延安”。"},
+  {id:"yangjialing", n:"杨家岭中央大礼堂", p:"陕西", c:"延安", lat:36.6120, lng:109.4630, cat:["slogan","memorial"], y:1945, m:"会场标语", major:true,
+   d:"中共七大会场。主席台保留“在毛泽东的旗帜下胜利前进”标语，是延安时期最重要的毛泽东标语遗存之一。"},
+  {id:"zaoyuan", n:"枣园革命旧址", p:"陕西", c:"延安", lat:36.6230, lng:109.4430, cat:["memorial"], y:1944, m:"革命旧址",
+   d:"1944—1947年中共中央书记处所在地，保留毛泽东、周恩来、朱德等领导人旧居与书记处小礼堂。"},
+
+  {id:"xining", n:"西宁山川集团毛泽东塑像", p:"青海", c:"西宁", lat:36.6500, lng:101.7800, cat:["statue"], y:1968, m:"铸铁", major:true,
+   d:"1968年12月26日落成。总高12.26米、像高7.1米，重26吨，是全国现存最大的纯铸铁毛泽东塑像，省级文物保护单位。",
+   src:"https://baijiahao.baidu.com/s?id=1647705833452008923"},
+
+  {id:"yinchuan-nanxun", n:"银川南薰门", p:"宁夏", c:"银川", lat:38.4630, lng:106.2760, cat:["slogan"], y:null, m:"画像+标语",
+   d:"银川古城南城门，门楼悬挂毛泽东画像，两侧保留时代标语，因外形酷似天安门被称为银川“小天安门”。"},
+  {id:"urumqi", n:"乌鲁木齐雅玛里克山", p:"新疆", c:"乌鲁木齐", lat:43.7950, lng:87.5600, cat:["statue"], y:1952, m:"水泥",
+   d:"原新疆十月拖拉机厂毛泽东雕像，1952年为见证中苏友好而建，2005年迁至雅玛里克山风景区。"},
+  {id:"kashgar", n:"喀什人民广场", p:"新疆", c:"喀什", lat:39.4704, lng:75.9898, cat:["statue"], y:1969, m:"水泥", major:true,
+   d:"1969年建成。相传上世纪80年代拆除风波中，当地维吾尔族市民自发围护塑像，使其得以保留，成为喀什城市记忆。"},
+
+  {id:"daqing", n:"大庆铁人王进喜纪念馆", p:"黑龙江", c:"大庆", lat:46.5900, lng:125.1000, cat:["slogan","memorial"], y:1964, m:"标语/纪念馆",
+   d:"“工业学大庆”是1964年毛泽东发出的号召。纪念馆与石油会战旧址保留大量那个时代的标语、口号与工业遗产。"},
+  {id:"leifeng", n:"抚顺雷锋纪念馆", p:"辽宁", c:"抚顺", lat:41.8530, lng:123.8230, cat:["slogan","memorial"], y:1963, m:"题词/纪念馆",
+   d:"毛泽东1963年题词“向雷锋同志学习”。馆区保留题词碑、雷锋墓与生平陈列，是全国学雷锋活动的核心纪念地。"},
+  {id:"shihezi", n:"新疆兵团军垦博物馆", p:"新疆", c:"石河子", lat:44.3050, lng:86.0800, cat:["slogan","memorial"], y:1954, m:"标语/博物馆",
+   d:"展示新疆生产建设兵团“屯垦戍边”历史。石河子是兵团军垦名城的代表，城市中保留大量军垦时期标语与纪念建筑。"}
+];
+
+const STORIES = {
+  tiananmen: "1949年10月1日，毛泽东在天安门城楼宣告中华人民共和国成立。城楼两侧最初悬挂的是“中华人民共和国万岁”和“中央人民政府万岁”，后来后一条改为“世界人民大团结万岁”。此后七十多年，这两条标语随城楼修缮反复重描，成为天安门最醒目的视觉符号。",
+  xinhuamen: "新华门原是乾隆年间相传为香妃而建的宝月楼，1913年辟为中南海正门并改今名。门内影壁上的“为人民服务”取自毛泽东1944年追悼张思德演讲的手迹；这五个字后来成为中国共产党的宗旨标识，也让这面影壁成为长安街上最著名的题词景观之一。",
+  "mao-memorial": "1976年9月9日毛泽东逝世后，中央决定在天安门广场南侧修建纪念堂。工程于1976年11月奠基，1977年9月9日毛泽东逝世一周年时正式开放。北大厅的汉白玉坐像高3.45米，瞻仰厅的水晶棺由江苏东海优质水晶熔炼加工而成；纪念堂建在原中华门旧址上，是广场中轴线的重要一段。",
+  cugb: "1952年院系调整中，北京地质学院在学院路成立，是著名的“八大学院”之一。1967年，学校在校园中轴线上竖起这尊毛泽东塑像；它与路对面的北京钢铁学院塑像隔街相望，成为学院路上一组罕见的“面对面”校园像。两尊像都保留至今，见证了那条大学路的变迁。",
+  ustb: "北京科技大学的前身北京钢铁学院，1952年由北洋大学、唐山交通大学等校的矿冶系科组建，是新中国第一所钢铁工业高等学府。1967年，钢院师生在校园里立起这尊塑像；它与对面北京地质大学的塑像几乎同时落成，隔学院路相望，成为“八大学院”时期留下的特殊景观。",
+  bupt: "北京邮电大学的前身北京邮电学院成立于1955年，是新中国第一所邮电高等学府。上世纪60年代后期，学校在校园中轴线上竖立毛泽东塑像；此后它长期出现在开学典礼、毕业合影和校园明信片中，成为几代北邮人共同的校园坐标。",
+  buct: "北京化工大学的前身北京化工学院始建于1958年，是新中国为培养化工人才而新建的高校。校园里的这尊毛泽东塑像立于上世纪60年代后期，所在北三环东路校区后来成为学校的主校区；塑像与老教学楼一起，记录了这所行业高校从单科性学院走向多科性大学的过程。",
+  bjtu: "北京交通大学的前身可追溯到1896年创办的山海关北洋铁路官学堂，是中国近代最早的工程高等学府之一。校园里的毛泽东塑像立于上世纪60年代后期；在铁路学科调整、院系搬迁的岁月里，它一直留在校园中轴线上，成为交大人辨认老校区的一处坐标。",
+  bsu: "北京体育大学的前身北京体育学院成立于1953年，是新中国第一所体育高等学府。校园里的毛泽东塑像立于上世纪60年代后期，所在信息路校区后来成为国家体育人才培养的重要基地；每逢毕业季，塑像前常能看到穿着学位服合影的学生。",
+  cau: "中国农业大学的前身可追溯到1905年创办的京师大学堂农科大学。东校区位于清华东路，校园里的毛泽东塑像立于上世纪60年代后期；它见证了这所农业名校从“北京农业大学”到“中国农业大学”的更名与发展，也陪伴了一代代农大学子的晨读与实习。",
+  ndu: "国防大学位于北京红山口，是全军最高军事学府，前身可追溯到抗日军政大学、军事学院等院校。校园里的毛泽东塑像与军校传统紧密相连；由于营区管理严格，这里通常不对外开放，普通访客只能在门外远望，塑像也少有清晰照片流传。",
+  "mil-museum": "中国人民革命军事博物馆是1959年国庆十周年“十大建筑”之一，1958年动工、1959年建成开放。馆名由毛泽东题写，建筑顶部的馆名大字沿用至今。建馆之初，全军调拨了大量文物，从北伐战争、土地革命到抗美援朝，这里成为新中国第一座综合性的军事博物馆。",
+  tjjt: "陆军军事交通学院位于天津海河东岸，是培养军交运输人才的高等军校。校园里的毛泽东塑像属于军校营区的一部分，平时不对外开放；它所在的教学区延续了军队院校整齐、朴素的布局，塑像也常被用作学员集合与宣誓的背景。",
+  "sjz-plaza": "1967年，石家庄在原第一工人文化宫前建起毛泽东塑像。石家庄是华北重要的纺织、医药工业城市，文革初期市区一度出现建像热潮，同一式样的塑像据称曾有7尊；这尊位于今天的人民广场，是保存下来且仍在原址附近的一尊，成为市中心的老地标。",
+  sjztd: "石家庄铁道大学的前身是1950年创建的中国人民解放军铁道兵工程学院，是铁道兵唯一的高等学府。校园里的毛泽东塑像延续了军校时期的校园格局；1984年学校转归地方后，塑像仍留在校园中，见证这所“铁道工程师摇篮”的转型。",
+  xibaipo: "1948年5月，毛泽东率中共中央机关来到西柏坡，在这里指挥辽沈、淮海、平津三大战役，召开七届二中全会，提出“两个务必”。1949年3月23日，中共中央离开西柏坡前往北平，毛泽东称之为“进京赶考”。纪念馆广场的五大书记铜像，纪念的正是这段“新中国从这里走来”的岁月。",
+  sxu: "山西大学的前身山西大学堂创办于1902年，是中国最早的三所国立大学之一。坞城校区的毛泽东塑像立于上世纪60年代后期；在太原高校中，它是保存较早、体量较大的一尊。塑像周围的法桐与老教学楼，构成了山大老校区最典型的校园景观。",
+  dazhai: "1964年，毛泽东发出“农业学大寨”的号召，山西昔阳大寨由此成为全国农业战线的样板。大寨人劈山造田、修梯田的事迹被广泛报道，陈永贵也从大队党支部书记走上国务院副总理岗位。今天的虎头山、大寨展览馆和村口标语仍保留着那段历史；郭沫若的部分骨灰也安葬在虎头山。",
+  baotou: "包头是“一五”时期国家重点建设的钢铁基地，来自全国的建设者汇集到阴山脚下。1967年，原中国冶金第二建设公司在礼堂前建起这尊执帽挥手的毛泽东塑像；它后来被列为包头市不可移动文物，是草原钢城早期建设记忆的一部分。",
+  shenyang: "沈阳中山广场的《毛泽东思想胜利万岁》群雕建于1969年，由鲁迅美术学院等单位的艺术家集体创作。毛泽东立像周围环绕着58个人物，表现从新民主主义革命到社会主义建设的历程；群雕体量巨大、人物众多，被称为新中国第一件超大型城市雕塑，也是沈阳城市中心最醒目的红色地标。",
+  dlut: "大连理工大学的前身大连工学院成立于1949年，是新中国为培养工业建设人才而创办的第一所新型正规大学。凌水河畔的校园里，毛泽东塑像立于上世纪60年代后期；它面朝主楼与广场，陪伴了大工从“工学院”到“理工大学”的成长。",
+  fuxin: "阜新是著名的“煤电之城”，海州露天矿曾是亚洲最大的露天煤矿。1969年，阜新在解放广场铸造毛泽东铜像；据当地资料，当时物资紧张，市里曾发动群众捐献铜盆、铜壶等铜器，汇集来的铜料最终铸成了这尊像。它是现存早期大型毛泽东铜像中少见的铜质像，也成为阜新城市记忆的一部分。",
+  fushun: "抚顺是新中国重要的煤炭基地，素有“煤都”之称。1968年，原抚顺工人文化宫前建起这尊毛泽东塑像，像身约5米、底座约3米；后来文化宫一带改造，塑像基本留在原位。它的实测坐标东经123°54′5″、北纬41°51′32″，是抚顺市区保存较完整的一尊早期塑像。",
+  changchun: "长春胜利公园始建于1915年，日伪时期曾叫“儿玉公园”，抗战胜利后改名胜利公园。园内的毛泽东塑像立于上世纪60年代后期；每年冬季，公园常以天安门造型制作大型冰灯，塑像与冰灯、雪雕同框，成为长春人熟悉的冬日景象。",
+  "haerbin-aijian": "这尊塑像原在哈尔滨车辆厂厂区。上世纪80年代，各地陆续拆除毛泽东塑像，车辆厂的职工没有把它砸毁，而是整体放倒、埋入地下。2002年，爱建新城开发建设时，埋在地下的塑像被重新挖出并立回地面，如今站在城市源广场上。它的“失踪”与“归来”，是哈尔滨城市更新中一段颇具传奇色彩的故事。",
+  hrbeu: "哈尔滨工程大学的前身是1953年创办的中国人民解放军军事工程学院（哈军工），陈赓大将任首任院长。建校时，毛泽东为学院颁发训词，明确其培养军事工程技术人才的任务。校园里的毛泽东塑像延续着哈军工传统；1970年学院主体南迁，部分留在哈尔滨的系科后来发展成今天的哈工程。",
+  qqhe: "齐齐哈尔是东北老工业基地的重要城市，市区一度保存7尊毛泽东塑像，分布在工人文化宫、厂区、学校等处，这在东北城市中较为少见。龙沙区工人文化宫前的这一尊，是其中最具代表性的一处；它见证了齐齐哈尔重工业时代的喧嚣，也保留了那一代工人的公共记忆。",
+  youyi: "友谊县的前身是1954年苏联援建的国营友谊农场，是新中国第一个大型机械化国营农场。农场办公楼前的这尊毛泽东塑像，与1967年清华大学那版塑像样式相同；这说明当年的塑像图样、模具曾在垦区传播。对友谊农场而言，它既是时代印记，也是中苏农业合作时期的一段注脚。",
+  fudan: "复旦大学创建于1905年，邯郸校区是学校1950年代以后逐步建成的核心校区。上世纪60年代后期，校园中轴线上竖起这尊毛泽东塑像；此后它见证了恢复高考、出国留学潮和复旦向综合性研究型大学的转型。今天，塑像周边仍是毕业照和校园导览的必经之处。",
+  tongji: "同济大学的前身是1907年创办的同济德文医学堂，早期以医学和工程著称。四平路校区的毛泽东塑像立于上世纪60年代后期；它所在的教学区后来建起图书馆、大礼堂和一批教学楼，塑像也因此成为同济老校园轴线上的一个固定参照。",
+  ecust: "华东理工大学的前身华东化工学院成立于1952年，是新中国第一所单科性化工高等学府，由交通大学、震旦大学等校的化工系科合并组建。梅陇路校区的毛泽东塑像立于上世纪60年代后期；它见证了学校从化工学院发展为多科性大学，也陪伴了几代化工人的实验与实习岁月。",
+  usst: "上海理工大学的前身是1906年创办的沪江大学，军工路校区保留着一批历史建筑。校园里的毛泽东塑像立于上世纪60年代后期；哥特式风格的老建筑与塑像同处一条校园轴线，形成一种独特的时代拼贴，也让这里成为上海高校中辨识度很高的取景地。",
+  ecnu: "华东师范大学成立于1951年，是新中国第一所社会主义师范大学，中山北路校区长期是学校本部。校园里的毛泽东塑像立于上世纪60年代后期；丽娃河、文史楼与塑像一起，构成华师大老校区最经典的校园意象，也承载了许多师范生的青春记忆。",
+  "sh-mao-home": "1924年，毛泽东携妻子杨开慧和年幼的毛岸英、毛岸青住进甲秀里，在国民党上海执行部工作，同时处理中共中央局事务。这是毛泽东在上海居住时间较长的一处寓所；后来旧居按原貌修复并对外开放，石库门弄堂里的陈设还原了当年一家人的生活场景。",
+  "nanjing-oct": "1956年1月11日，毛泽东视察南京栖霞区十月村，勉励当地农民组织起来、发展生产。1967年，十月公社的村民在当年毛泽东站立的地方集资建起这尊塑像；它是南京现存4座毛泽东雕像之一，后来被列为市级文物保护单位，并入选江苏省红色地名。",
+  zju: "浙江大学的前身求是书院创办于1897年，玉泉校区是学校1950年代以后建设的核心校区。校园里的毛泽东塑像立于上世纪60年代后期；它背靠老和山、面向教学区，见证了浙大从工科强校走向综合性大学的历程，也是玉泉校区最具辨识度的地标之一。",
+  xiaoying: "1958年1月5日，毛泽东在杭州视察小营巷的爱国卫生工作，走进居民家中查看水缸、厕所和厨房。小营巷因此成为全国爱国卫生运动的样板，被称为“江南红巷”。今天的纪念馆保留了当年的巷貌与陈列，毛泽东视察过的墙门、水井仍在，是杭州老城里一处安静的红色纪念地。",
+  ahmu: "安徽医科大学的前身是1926年创办于上海的东南医科大学，1949年内迁安徽，1952年迁至合肥，1954年改称安徽医学院。梅山路校区的毛泽东塑像立于上世纪60年代后期；它见证了这所医学院从上海西迁、在合肥扎根的过程，也陪伴了无数医学生的解剖课与临床实习。",
+  ahly: "这处点位来自2018年网络流传的“35所大学”名单，校园位于阜阳市颍上县。公开资料对校内毛泽东塑像的建造年代、位置和现状记载很少；把它标在地图上，更多是提供一条线索。若计划实地探访，建议先向学校确认是否对外开放。",
+  fuzhou: "1969年，福州在五一广场北侧、于山堂前建起毛泽东塑像和观礼台。这里地处福州老城中轴线，北靠于山、南望闽江，塑像落成后成为福州大型集会和国庆游行的观礼场所。近年，福州市对塑像和观礼台进行过加固修复，它仍是市中心最具时代特征的地标之一。",
+  gutian: "1929年12月28日至29日，中国工农红军第四军第九次党代表大会在福建上杭古田的廖氏宗祠召开，史称古田会议。会议确立了“思想建党、政治建军”的原则，是人民军队建设史上的重要里程碑。会址对面的山体上保留着“古田会议永放光芒”大型标语，2014年全军政治工作会议也在这里召开。",
+  jinggangshan: "1927年秋收起义受挫后，毛泽东率部向井冈山转移，在茨坪一带建立中国第一个农村革命根据地。1928年，朱德、陈毅率部上山与毛泽东会师；1930年，毛泽东写下《星星之火，可以燎原》。1993年，茨坪立起毛泽东铜像，与旧居、井冈山革命博物馆共同构成今天井冈山最核心的红色景观。",
+  ruijin: "1931年11月，中华苏维埃第一次全国代表大会在瑞金叶坪谢氏宗祠召开，中华苏维埃共和国临时中央政府宣告成立，毛泽东当选中央执行委员会主席，“毛主席”的称呼由此而来。叶坪红军广场上保留着红军烈士纪念塔、检阅台等旧址；这里也因此被称为“红色故都”的心脏。",
+  anyuan: "1921年秋，毛泽东到安源煤矿考察，随后多次派李立三、刘少奇等到安源组织工人。1922年9月，安源路矿工人大罢工爆发，提出“从前是牛马，现在要做人”的口号，成为中国工人运动史上的一次重要胜利。安源毛泽东铜像广场就建在煤矿厂区旁，纪念这段工人运动岁月。",
+  tonggu: "1927年9月，毛泽东在铜鼓领导秋收起义第三团的行动。此前他从安源赴铜鼓途中，在浏阳张家坊被民团抓住，靠机智脱险。铜鼓萧家祠保留着毛泽东当年的住处；今天的纪念地立有青年毛泽东铜像，山城铜鼓也因此被称为“秋收起义策源地”之一。",
+  wenjiashi: "1927年9月19日，秋收起义部队在浏阳文家市里仁学校会师。面对攻打长沙受挫的形势，毛泽东主张放弃攻打中心城市，转向敌人力量薄弱的农村山区。他用“小石头要打烂大水缸”作比喻，说服大家向罗霄山脉进军。这次转兵，被视为中国革命从城市转向农村、走上“农村包围城市”道路的重要起点。",
+  "jinan-chixia": "这尊塑像1968年原建于山东省工业展览馆前，1999年12月迁到英雄山赤霞广场，像高12.26米。济南市区现存5尊大型毛泽东塑像，赤霞广场这一尊体量最大、位置最显著。迁建时，塑像被妥善保护并重新立起，成为济南城市雕塑保护的一次特殊案例。",
+  sdnu: "1967年10月，山东师范学院（今山东师范大学）在东方红广场建成毛泽东塑像，通高约16米。它落成于文革初期全国高校建像潮中，是济南高校里体量最大的一尊。广场后来成为学校集会、开学典礼和毕业合影的场所；塑像与背后的教学楼一起，构成山师人最熟悉的校园画面。",
+  sph: "山东省立医院是济南老城的重要医疗机构，其前身可追溯到清末的教会医院。医院院内的这尊毛泽东塑像，是济南市区现存5尊大型文革时期塑像之一；在医院这样的公共场所保留大型塑像，在同类遗存中并不多见。它安静地立在院区里，见证了医院百年来的扩建与变迁。",
+  jingba: "这尊塑像位于济南经八路小学（原经八路一小）校园内，像前有一座影壁。上世纪60年代后期，济南不少学校、工厂在院落中轴线建毛泽东塑像，并配建影壁、标语墙；经八路小学这一组因保存完整而显得少见。它也是济南市区现存5尊大型塑像之一。",
+  beiyuan: "1958年，毛泽东视察济南市北园人民公社，人民公社化运动随后在山东迅速推开。1967年，北园人在当年视察的地方建起毛泽东塑像和标语墙；后来公社旧址改为北园中学，塑像与标语墙仍留在校园里。对学生来说，这是一段就发生在教室门口的地方史。",
+  saas: "毛泽东曾于1958年、1959年两次视察山东省农业科学院。2013年12月26日，在毛泽东诞辰120周年之际，省农科院为纪念这两次视察立起一尊毛泽东铜像，像高4.5米。铜像所在的院区，是山东农业科技研发的重要基地；这段渊源也让农科院成为济南红色参观线路的一站。",
+  "zz-plaza": "1968年，郑州人民广场建成毛泽东塑像，像高12.26米、基座5.16米。12.26对应毛泽东的生日，5.16则对应1966年《五一六通知》发出的日子；这种用数字表达政治纪念的方式，在文革时期的塑像中并不罕见。它位于金水路与人民路交叉口，是郑州老城中心的地标，现为河南省重点文物保护单位。",
+  luoyang: "第一拖拉机制造厂是“一五”时期苏联援建的重点工程，新中国第一台“东方红”拖拉机就诞生在这里。1968年国庆前夕，一拖在厂门前建成毛泽东塑像；工人们给塑像的头顶和食指装上了不锈钢避雷针，表面涂有机硅防护。塑像与厂门、厂区一起，成为洛阳涧西工业遗产街区的重要组成。",
+  nanyang: "1967年，南阳柴油机厂铸造了这尊毛泽东塑像。1980年代，各地掀起拆除毛泽东塑像的风潮，这尊像被从台座上取下，放进仓库保存。1999年，厂里的职工又把它重新立在职工住宅区门前。它的“拆而未毁、尘封再立”，是那个年代许多塑像命运的一个缩影。",
+  hebi: "鹤壁因煤建市，红旗街是山城区老城的中心。1968年，鹤壁在红旗街与长风路交叉口建成这尊毛泽东塑像，通高12.26米，数字暗合毛泽东的生日。豫北地区保存下来的街头大型毛泽东塑像不多，这一尊因此成为鹤壁老城区最具辨识度的地标。",
+  nanjiecun: "1993年，临颍南街村在东方红广场立起毛泽东雕像，基座一侧写着“毛泽东不是神，毛泽东思想胜过神”。南街村在改革开放后坚持集体所有制，走“共同富裕”的集体经济道路，同时保留大量毛泽东时代标语、语录墙和宣传画，一度被称为“红色亿元村”。这尊雕像也因此成为观察南街村模式的一个入口。",
+  "henan-normal": "河南师范大学位于新乡，建设东路校区长期是学校本部。校园里的毛泽东塑像立于上世纪60年代后期，是河南高校中保存下来的早期校园像之一。它所在的老校区承载了几代河南师范人的记忆；每到毕业季，塑像前总有人排队合影。",
+  hongqiqu: "上世纪60年代，河南林县人民在太行山腰开凿红旗渠，用十年时间建成引漳入林的水利工程。总干渠长70多公里，削平山头、凿通隧洞，被称为“人工天河”。“自力更生、艰苦奋斗”的红旗渠精神由此而来；纪念馆和青年洞景区保留了当年施工的实物与影像，是理解那段历史最直观的地方。",
+  "wuhan-theatre": "1968年，武汉剧院门前竖起这尊毛泽东雕像。当年同批建造的共有三座，分别位于武汉的不同地标；后来另外两座陆续拆除，只有这一座保留下来。武汉剧院建于1950年代，是汉口的重要文化设施；雕像与剧院立面一起，构成了解放大道旁极具时代感的一组城市景观。",
+  whu: "武汉大学的前身自强学堂创办于1893年，珞珈山校园由美国建筑师开尔斯设计，老斋舍、图书馆和樱花大道闻名全国。校园里的毛泽东塑像立于上世纪60年代后期；它位于狮子山下的校园轴线上，与珞珈山的绿色屋顶、樱花树一起，成为武大最容易被认出的画面之一。",
+  hust: "华中科技大学的前身华中工学院成立于1952年，是院系调整中由武汉大学、湖南大学等校工科合并组建的全国重点工科院校。喻家山下的校园里，毛泽东塑像立于上世纪60年代后期；它面朝教学区，见证了华工从工科院校发展为综合性大学的历程，也是“喻家山”校园记忆的一部分。",
+  "wuhan-peasant": "1927年3月至6月，毛泽东在武昌红巷13号主持中央农民运动讲习所，培养来自全国各地的农民运动骨干。旧址原为清末的北路学堂，后来成为农讲所校舍；毛泽东、彭湃、恽代英等都曾在此授课。今天，大操场上的毛泽东雕像再现了他当年讲课的场景，旧址纪念馆保留着教室、宿舍和农具陈列。",
+  "shaoshan-bronze": "1993年12月，为纪念毛泽东诞辰100周年，韶山在毛泽东故居附近的广场上立起这尊铜像。铜像高6米、基座4.1米，通高10.1米，重3.7吨，由南京晨光机器厂铸造。揭幕前后，当地流传着“日月同辉”、寒冬杜鹃绽放等说法，这些细节后来成为韶山红色旅游中最常被讲述的故事。",
+  "shaoshan-home": "1893年12月26日，毛泽东出生在韶山冲上屋场这栋土木结构的“凹”字形农舍里。1910年，他离开韶山外出求学；1925年，他又回到家乡开展农民运动，在阁楼上建立中共韶山支部。故居在1929年遭到破坏，1950年按原貌修复；1959年毛泽东回韶山时，写下“别梦依稀咒逝川，故园三十二年前”。",
+  juzizhou: "2009年12月26日，橘子洲青年毛泽东艺术雕塑落成。雕塑高32米、长83米、宽41米，由8000多块永定红花岗岩拼接而成，表现的是1925年青年毛泽东在橘子洲头思考中国命运的形象。那一年，毛泽东写下《沁园春·长沙》，“问苍茫大地，谁主沉浮”成为雕塑最贴切的注脚。",
+  hnu: "1950年，毛泽东为湖南大学题写校名。1968年，学校在东方红广场立起这尊毛泽东塑像，通高19.76米，数字暗合1976年毛泽东逝世。广场背靠岳麓山、面向湘江，是湖南大学校园轴线的核心；塑像、老图书馆和岳麓书院一起，构成长沙最经典的大学景观之一。",
+  "cs-museum": "1921年秋，毛泽东与杨开慧租住长沙清水塘22号，这里成为中共湘区委员会机关。毛泽东在此领导湘区工人运动，杨开慧协助整理文件、接待同志，他们的孩子也在这里生活。旧址现为长沙市博物馆的一部分，院内的毛泽东塑像与清水塘、旧居一起，记录了这对革命夫妻在长沙的岁月。",
+  xtu: "1958年，湘潭大学创办，毛泽东亲笔题写校名。校方资料记载，他还嘱托“一定要把湘潭大学办好”。南门内的毛泽东铜像因此成为学校最重要的精神标识；每年新生入学、毕业离校，许多湘大人都会在铜像前合影。对湘潭而言，这所大学也是毛泽东家乡最高学府之一。",
+  nudt: "国防科技大学的前身是1953年创办的哈尔滨军事工程学院，1970年主体南迁长沙，1978年改建为国防科技大学。校园里的毛泽东塑像延续着哈军工的传统；这里后来研制出“银河”系列巨型计算机，是中国高性能计算的重要起点。军校营区管理严格，普通访客通常不能进入。",
+  "hunan-1st-normal": "1913年至1918年，毛泽东在湖南第一师范求学；1920年至1922年，他又回到母校担任附小主事。求学期间，他坚持冷水浴、长途游学，写下大量读书笔记；1950年，他为母校题词“要做人民的先生，先做人民的学生”。今天的旧址保留着第八班教室、自习室和水井，是长沙最经典的红色研学线路之一。",
+  "gz-peasant": "1926年5月至9月，毛泽东在广州主办第六届农民运动讲习所，所址设在番禺学宫。学员来自全国20个省区，共300多人；毛泽东、彭湃、恽代英等曾在此授课。农讲所培养了大批农民运动骨干，毛泽东关于农民问题的思考也在这里进一步成形。旧址现为纪念馆，保留着课堂、宿舍和农讲所时期的陈列。",
+  nanning: "1958年1月，毛泽东在南宁主持中央工作会议，史称“南宁会议”。会议期间，他在人民公园接见广西各族群众，成为广西民族团结史上的一段佳话。1978年，广西在当年接见的地方建成“毛主席接见广西各族人民纪念馆”，馆内陈列着照片、实物和当年接见场景的复原。",
+  danzhou: "1968年，儋州白马井的渔业企业在厂区立起这尊毛泽东铜像。白马井是北部湾畔的重要渔港，曾属广东省南海渔业总公司；铜像是海南保存下来的早期毛泽东铜像之一。后来企业改制、渔港变迁，铜像仍留在原地，面朝大海，见证着这座渔港的兴衰。",
+  cqu: "重庆大学创建于1929年，沙坪坝校区在抗战时期是大后方重要的文化教育区。校园里的毛泽东塑像立于上世纪60年代后期；它所在的老校区保留着寅初亭、理学院楼等历史建筑。塑像与这些建筑一起，见证了重庆大学从抗战时期的艰苦办学到今天的“双一流”建设。",
+  swu: "西南大学由原西南师范大学、西南农业大学等合并组建，北碚校区可追溯到1906年的川东师范学堂。抗战时期，北碚是迁建区和文化区，许多学校、科研机构在此落脚。校园里的毛泽东塑像立于上世纪60年代后期；袁隆平就是从这里的西南农学院走上杂交水稻研究之路。",
+  cqmu: "1956年，为支援西南医学教育，上海第一医学院部分师生西迁重庆，创建重庆医学院，后来发展为重庆医科大学。袁家岗校区的毛泽东塑像立于上世纪60年代后期；它见证了这所“西迁”医学院在重庆扎根、成长的历程，也陪伴了无数医学生的早课与实习。",
+  "cq-industrial": "重庆工业博物馆建在大渡口重钢型钢厂旧址上，保留着老厂房、钢梁和烟囱。馆内的毛泽东水泥塑像原本立在老厂区，2014年因工业遗产保护被整体搬迁到博物馆。塑像与重钢的机器、产品陈列在一起，成为重庆百年工业记忆的一部分。",
+  guiyuan: "桂园原是张治中在重庆的官邸。1945年重庆谈判期间，毛泽东白天在桂园办公、会客，晚上回红岩村；10月10日，《政府与中共代表会谈纪要》（双十协定）在桂园客厅签署。如今客厅按当年原貌陈列，沙发、茶几和签字桌都保留着，是重庆谈判最直接的见证地之一。",
+  chengdu: "1969年，成都天府广场竖起毛泽东塑像，像高13米。塑像背后的“毛泽东思想胜利万岁展览馆”后来改为四川科技馆；广场一带原是明代蜀王府所在地。塑像、展览馆和人民南路构成成都中心轴线上最具时代特征的一组建筑，也是老成都人辨认城市中心的地标。",
+  scu: "四川大学的前身可追溯到1896年创办的四川中西学堂，望江校区是学校的老校区。校园里的毛泽东塑像立于上世纪60年代后期；它邻近望江楼、荷花池和老教学楼，见证了川大从文理学院到综合性大学的合并与发展。每年毕业季，塑像前总有不少学生拍照留念。",
+  panzhihua: "1960年代，三线建设在西南腹地展开，攀枝花钢铁基地是重中之重。建设者在荒山峡谷中建起钢城，1970年攀钢一号高炉出铁。博物馆里的口号、机器和照片，记录了“备战备荒为人民”的岁月；攀枝花也因此从一个小渡口发展为一座以钢铁工业闻名的城市。",
+  "gy-plaza": "1968年12月26日，贵阳人民广场的毛泽东塑像完工，像高12.26米、基座7.1米。12.26对应毛泽东生日，7.1对应党的生日；这种数字象征在当时的塑像设计中很常见。贵阳现存5尊大型毛泽东塑像，这一尊位于市中心，是贵阳老城最具代表性的时代地标。",
+  gzu: "贵州大学的前身可追溯到1902年的贵州大学堂，花溪校区是学校的主校区之一。校园里的毛泽东塑像立于上世纪60年代后期，是2018年“35所大学”名单收录的贵州高校点位。它见证了贵州大学从省立大学到“双一流”高校的发展，也陪伴了花溪河畔一代代学子。",
+  gznu: "贵州师范大学的前身是1941年创办的国立贵阳师范学院，宝山校区长期是学校本部。校园里的毛泽东塑像立于上世纪60年代后期；它所在的老校区位于贵阳老城与黔灵山之间，承载了几代贵州师范人的记忆。对许多毕业生来说，塑像和宝山路上的梧桐树就是母校的象征。",
+  duyun: "都匀发电厂是黔南三线建设的重要配套企业。厂区广场上的这尊毛泽东塑像，用钢筋、水泥、石块和镀铜材料塑成，外表仿铜；2016年有报道时它仍在原址。工厂改制后，塑像的去留一度引起关注。它不像城市广场上的塑像那样醒目，却是三线企业生活区的一处真实遗存。",
+  kaili: "凯里鸭塘一带曾是三线电子工业基地（083基地）的厂区。上世纪60年代，大批电子工厂迁入黔东南的山沟，形成相对独立的“厂矿社会”。军工厂搬迁后，山沟里的毛泽东塑像留在原地，成为三线建设遗址的一部分；这类“厂迁像留”的点位，在贵州、四川等地并不少见。",
+  zunyi: "遵义会议会址原是黔军师长柏辉章的私邸。1935年1月，中央红军在此召开政治局扩大会议，纠正“左”倾军事错误，确立毛泽东在党和红军中的领导地位。会址门额上的“遵义会议会址”为毛泽东后来题写；纪念馆里的长桌、挂钟和椅子仍按当年会场原貌陈列。",
+  lijiang: "1969年10月1日，丽江红太阳广场的毛泽东塑像落成，像高7.1米、基座5.16米，通高12.26米。三个数字分别对应建党节、1966年《五一六通知》和毛泽东生日。塑像位于玉龙雪山下的丽江坝子，是古城之外最具时代印记的地标之一，也是公开报道中保存较完整的早期塑像。",
+  "yanan-museum": "延安革命纪念馆成立于1950年，1997年新馆落成时，广场上立起程允贤创作的毛泽东铜像。铜像高5米、连基座8.15米，基座刻“毛泽东在延安”。延安时期，毛泽东在凤凰山、杨家岭、枣园的窑洞里写下《论持久战》《为人民服务》等著作，纪念馆的陈列串联起中共中央在延安的十三年。",
+  yangjialing: "杨家岭中央大礼堂建于1942年，由中央办公厅的工作人员自己设计施工。1945年4月至6月，中共七大在这里召开；主席台正中悬挂毛泽东、朱德的画像，上方写着“在毛泽东的旗帜下胜利前进”。七大把毛泽东思想确立为党的指导思想，这次大会也成为中国共产党走向全国胜利的重要起点。",
+  zaoyuan: "1943年至1947年，中共中央书记处迁驻枣园。1944年9月，毛泽东在枣园为张思德召开追悼会，发表《为人民服务》演讲；1945年抗战胜利后，他又从枣园赴重庆谈判。枣园的窑洞、小礼堂和五大书记铜像，记录了中共中央书记处在延安的最后岁月，也留下“为人民服务”这句最朴素的口号。",
+  xining: "1968年12月26日，西宁山川集团（原青海山川机床铸造厂）的毛泽东塑像落成，通高12.26米、像高7.1米、重26吨，是全国现存最大的纯铸铁毛泽东塑像。2019年，这尊省级文物保护单位经历了一次整体修缮；它立在厂区里，见证了青海机械工业的建设岁月。",
+  "yinchuan-nanxun": "南薰门是银川古城的南门，始建于明代，乾隆三年（1738年）宁夏大地震后重建。门楼后来悬挂毛泽东画像，两侧保留时代标语，因形似天安门而被市民称为“小天安门”。它位于银川老城中轴线南端，是当地人辨认老城方向的重要参照，也是游客常去打卡的一处城市景观。",
+  urumqi: "1952年，新疆十月拖拉机厂在乌鲁木齐建成，是新中国成立后新疆第一个大型机械工业企业，也是中苏友好的象征。厂区前的毛泽东雕像后来随城市改造迁到雅玛里克山；从工业厂区到山头公园，它的迁移轨迹也映照了乌鲁木齐城市空间的变迁。",
+  kashgar: "1969年，喀什人民广场建成毛泽东塑像。当地流传着这样一个故事：上世纪80年代各地陆续拆除毛泽东塑像时，喀什的维吾尔族市民自发围在塑像周围保护，使它得以保留。无论细节如何，这尊塑像从此成为喀什城市记忆的一部分，也是人民广场上最醒目的地标。",
+  daqing: "1960年，来自全国的数万石油职工在大庆展开石油大会战。王进喜带领1205钻井队，喊出“宁肯少活二十年，拼命也要拿下大油田”；1964年，毛泽东发出“工业学大庆”的号召。铁人王进喜纪念馆里的钻机、照片和口号，保存了那段艰苦创业的记忆，也让大庆成为新中国工业精神的重要象征。",
+  leifeng: "1962年8月15日，雷锋在抚顺因公殉职，年仅22岁。1963年3月5日，毛泽东题词“向雷锋同志学习”发表，全国掀起学雷锋热潮。抚顺雷锋纪念馆保留着雷锋墓、题词碑和生平陈列；馆区与雷锋生前所在部队驻地相邻，是全国学雷锋活动的核心纪念地之一。",
+  shihezi: "1954年，新疆生产建设兵团成立，军垦战士在戈壁荒滩上建设石河子。军垦博物馆由原兵团军垦第一楼改建，馆外的广场和城市绿地保留着大量军垦时期标语；1965年，周恩来曾到石河子视察并接见支边青年。石河子因此被称为“共和国军垦第一城”，博物馆也是理解兵团历史的重要窗口。"
+};
+SITES.forEach(function(s){ s.st = STORIES[s.id] || ""; });
+(function(){
+  "use strict";
+  const $ = function(s){ return document.querySelector(s); };
+  const $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  const PROV_ORDER = ["北京","天津","河北","山西","内蒙古","辽宁","吉林","黑龙江","上海","江苏","浙江","安徽","福建","江西","山东","河南","湖北","湖南","广东","广西","海南","重庆","四川","贵州","云南","西藏","陕西","甘肃","青海","宁夏","新疆"];
+  const state = {cats:new Set(Object.keys(CATS)), q:"", prov:"all", era:"all", selected:null};
+  const initialParams = new URLSearchParams(location.search);
+  const initialQ = (initialParams.get("q") || "").trim();
+  if(initialQ) state.q = initialQ.toLowerCase();
+  const catParam = (initialParams.get("cat") || "").split(",").filter(function(k){ return !!CATS[k]; });
+  if(catParam.length) state.cats = new Set(catParam);
+  const provParam = initialParams.get("prov");
+  if(provParam && SITES.some(function(s){ return s.p === provParam; })) state.prov = provParam;
+
+  if(!window.L){ document.body.innerHTML = '<div style="padding:40px;font:16px sans-serif">地图库加载失败，请检查网络后刷新。</div>'; return; }
+
+  /* ---------- coordinates: WGS84 -> GCJ02 for Amap tiles ---------- */
+  const PI = Math.PI, A = 6378245.0, EE = 0.00669342162296594323;
+  function outOfChina(lat,lng){ return !(lng>73.66 && lng<135.05 && lat>3.86 && lat<53.55); }
+  function tLat(x,y){
+    let r = -100+2*x+3*y+0.2*y*y+0.1*x*y+0.2*Math.sqrt(Math.abs(x));
+    r += (20*Math.sin(6*x*PI)+20*Math.sin(2*x*PI))*2/3;
+    r += (20*Math.sin(y*PI)+40*Math.sin(y/3*PI))*2/3;
+    r += (160*Math.sin(y/12*PI)+320*Math.sin(y*PI/30))*2/3;
+    return r;
+  }
+  function tLng(x,y){
+    let r = 300+x+2*y+0.1*x*x+0.1*x*y+0.1*Math.sqrt(Math.abs(x));
+    r += (20*Math.sin(6*x*PI)+20*Math.sin(2*x*PI))*2/3;
+    r += (20*Math.sin(x*PI)+40*Math.sin(x/3*PI))*2/3;
+    r += (150*Math.sin(x/12*PI)+300*Math.sin(x/30*PI))*2/3;
+    return r;
+  }
+  function gcj(lat,lng){
+    if(outOfChina(lat,lng)) return [lat,lng];
+    let dLat=tLat(lng-105,lat-35), dLng=tLng(lng-105,lat-35);
+    const rad=lat/180*PI; let magic=Math.sin(rad); magic=1-EE*magic*magic;
+    const sq=Math.sqrt(magic);
+    dLat=(dLat*180)/((A*(1-EE))/(magic*sq)*PI);
+    dLng=(dLng*180)/(A/sq*Math.cos(rad)*PI);
+    return [lat+dLat,lng+dLng];
+  }
+
+  function primaryCat(s){
+    if(s.cat.indexOf("bronze")>=0) return "bronze";
+    if(s.cat.indexOf("statue")>=0) return "statue";
+    if(s.cat.indexOf("slogan")>=0) return "slogan";
+    return "memorial";
+  }
+  function catNames(s){ return s.cat.map(function(c){return CATS[c].name;}).join(" · "); }
+  function eraText(y){
+    if(y==null) return "年代不详";
+    return y+"年";
+  }
+  function eraMatch(y,e){
+    if(e==="all") return true;
+    if(e==="unknown") return y==null;
+    if(e==="pre1960") return y!=null && y<1960;
+    if(e==="1960") return y!=null && y>=1960 && y<1970;
+    if(e==="1970") return y!=null && y>=1970 && y<1980;
+    if(e==="1980") return y!=null && y>=1980 && y<2000;
+    if(e==="2000") return y!=null && y>=2000;
+    return true;
+  }
+  function matches(s){
+    if(!s.cat.some(function(c){return state.cats.has(c);})) return false;
+    if(state.prov!=="all" && s.p!==state.prov) return false;
+    if(!eraMatch(s.y,state.era)) return false;
+    if(state.q){
+      const hay=(s.n+" "+s.p+" "+s.c+" "+(s.d||"")+" "+(s.st||"")+" "+s.cat.map(function(c){return CATS[c].name;}).join(" ")).toLowerCase();
+      if(hay.indexOf(state.q)<0) return false;
+    }
+    return true;
+  }
+
+  /* ---------- map ---------- */
+  const map = L.map("map",{zoomControl:false, minZoom:3, maxZoom:18, worldCopyJump:false, maxBounds:[[12,68],[56,142]], maxBoundsViscosity:.15}).setView([34.5,105.5],4);
+  const std = L.tileLayer("https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",{
+    subdomains:"1234", maxZoom:18, attribution:'&copy; <a href="https://www.amap.com/" target="_blank" rel="noopener">高德地图</a> · 数据为公开资料整理'
+  }).addTo(map);
+  const sat = L.tileLayer("https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}",{
+    subdomains:"1234", maxZoom:18, attribution:'&copy; <a href="https://www.amap.com/" target="_blank" rel="noopener">高德地图</a>'
+  });
+  L.control.layers({"标准地图":std,"卫星影像":sat},null,{position:"bottomright",collapsed:true}).addTo(map);
+  L.control.zoom({position:"bottomright"}).addTo(map);
+  L.control.scale({position:"topleft",imperial:false,maxWidth:90}).addTo(map);
+
+  const cluster = (typeof L.markerClusterGroup === "function")
+    ? L.markerClusterGroup({
+        showCoverageOnHover:false, maxClusterRadius:52, spiderfyOnMaxZoom:true,
+        disableClusteringAtZoom:14, removeOutsideVisibleBounds:true,
+        iconCreateFunction:function(c){
+          const n=c.getChildCount();
+          const size=n<10?36:(n<50?44:52);
+          const cls=n<10?"":(n<50?" c2":" c3");
+          return L.divIcon({html:'<div class="cluster'+cls+'" style="width:'+size+'px;height:'+size+'px">'+n+'</div>',className:"cluster-wrap",iconSize:[size,size]});
+        }
+      })
+    : L.layerGroup();
+  cluster.addTo(map);
+
+  const markerById = {};
+  let filtered = [];
+
+  function pinIcon(s){
+    const pk=primaryCat(s), c=CATS[pk].color;
+    const cls="pin"+(s.major?" major":"");
+    const size=s.major?34:28;
+    return L.divIcon({className:"mao-icon", html:'<div class="'+cls+'" style="--c:'+c+'">'+CATS[pk].short+'</div>', iconSize:[size,size], iconAnchor:[size/2,size/2], popupAnchor:[0,-size/2+2]});
+  }
+
+  function popupHtml(s){
+    const g=gcj(s.lat,s.lng), glat=g[0], glng=g[1];
+    const name=encodeURIComponent(s.n);
+    const amap="https://uri.amap.com/marker?position="+glng+","+glat+"&name="+name+"&src=mao-map&coordinate=gaode&callnative=0";
+    const bmap="https://api.map.baidu.com/marker?location="+glat+","+glng+"&title="+name+"&content="+name+"&output=html&coord_type=gcj02&src=webapp";
+    const osm="https://www.openstreetmap.org/?mlat="+s.lat+"&mlon="+s.lng+"#map=16/"+s.lat+"/"+s.lng;
+    const badges=s.cat.map(function(c){return '<span class="badge b-'+c+'">'+CATS[c].name+'</span>';}).join("");
+    const src=s.src?'<a href="'+s.src+'" target="_blank" rel="noopener">相关报道 ↗</a>':"";
+    const st=s.st||"";
+    return '<div class="pop">'
+      +'<div class="kicker">'+s.p+' · '+s.c+'</div>'
+      +'<h3>'+s.n+'</h3>'
+      +'<div class="badges">'+badges+'</div>'
+      +'<p>'+s.d+'</p>'
+      +(st?'<div class="story"><div class="st-t">背后的故事</div><p>'+st+'</p></div>':"")
+      +'<div class="meta">'+eraText(s.y)+(s.m?" · "+s.m:"")+(s.major?" · 重点地点":"")+'</div>'
+      +'<div class="actions"><a href="'+amap+'" target="_blank" rel="noopener">高德导航</a><a href="'+bmap+'" target="_blank" rel="noopener">百度地图</a><a href="'+osm+'" target="_blank" rel="noopener">OSM</a>'+src+'</div>'
+      +'</div>';
+  }
+
+  function render(){
+    filtered = SITES.filter(matches);
+    cluster.clearLayers();
+    Object.keys(markerById).forEach(function(k){ delete markerById[k]; });
+    filtered.forEach(function(s){
+      const g=gcj(s.lat,s.lng);
+      const m=L.marker(g,{icon:pinIcon(s),title:s.n,riseOnHover:true,keyboard:true});
+      m.bindPopup(popupHtml(s),{maxWidth:330,minWidth:250,maxHeight:420,autoPanPadding:[28,28]});
+      m.on("popupopen",function(){ select(s.id); });
+      m.on("click",function(){ select(s.id); });
+      markerById[s.id]=m;
+      cluster.addLayer(m);
+    });
+    renderList();
+    $("#st-shown").textContent=filtered.length;
+    if(state.selected && !filtered.some(function(s){return s.id===state.selected;})){
+      state.selected=null;
+    }
+    updateActive();
+  }
+
+  function renderList(){
+    const list=$("#list");
+    if(!filtered.length){ list.innerHTML='<div class="empty">没有符合条件的地点<br>试试放宽分类、省份或年代筛选</div>'; return; }
+    const groups={};
+    filtered.forEach(function(s){ (groups[s.p]=groups[s.p]||[]).push(s); });
+    let html="";
+    PROV_ORDER.forEach(function(p){
+      const arr=groups[p]; if(!arr||!arr.length) return;
+      arr.sort(function(a,b){
+        if(!!b.major!==!!a.major) return b.major?1:-1;
+        return (a.c||"").localeCompare(b.c||"","zh") || a.n.localeCompare(b.n,"zh");
+      });
+      html+='<div class="prov-h">'+p+' · '+arr.length+' 处</div>';
+      arr.forEach(function(s){
+        const pk=primaryCat(s);
+        html+='<div class="site" data-id="'+s.id+'">'
+          +'<span class="pin-dot" style="--c:'+CATS[pk].color+'"></span>'
+          +'<div class="txt"><div class="nm"><span>'+s.n+'</span>'+(s.major?'<em>重点</em>':'')+'</div>'
+          +'<div class="sub">'+s.c+' · '+eraText(s.y)+' · '+catNames(s)+'</div></div></div>';
+      });
+    });
+    list.innerHTML=html;
+  }
+
+  function updateActive(){
+    $$("#list .site").forEach(function(el){
+      el.classList.toggle("active", el.getAttribute("data-id")===state.selected);
+    });
+    const el=$('#list .site[data-id="'+state.selected+'"]');
+    if(el && el.scrollIntoView) el.scrollIntoView({block:"nearest"});
+  }
+
+  function select(id){
+    state.selected=id;
+    updateActive();
+    try{ if(history.replaceState) history.replaceState(null,"","#"+id); }catch(e){}
+  }
+
+  function focusSite(id){
+    const m=markerById[id]; if(!m) return;
+    state.selected=id;
+    updateActive();
+    map.stop();
+    const ll=m.getLatLng();
+    const targetZoom=Math.max(map.getZoom(),15);
+    let opened=false;
+    const open=function(){
+      if(opened || state.selected!==id) return;
+      opened=true;
+      m.openPopup();
+    };
+    map.setView(ll,targetZoom,{animate:false});
+    setTimeout(open,60);
+  }
+
+  function fitAll(){
+    if(!filtered.length){ map.setView([34.5,105.5],4,{animate:false}); return; }
+    const b=L.latLngBounds(filtered.map(function(s){ return gcj(s.lat,s.lng); }));
+    map.fitBounds(b.pad(.12),{animate:false,maxZoom:6});
+  }
+
+  /* ---------- UI ---------- */
+  const chips=$("#chips");
+  chips.innerHTML=Object.keys(CATS).map(function(k){
+    const count=SITES.filter(function(s){return s.cat.indexOf(k)>=0;}).length;
+    return '<button class="chip '+(state.cats.has(k)?'on':'off')+'" data-cat="'+k+'" style="--c:'+CATS[k].color+'"><span class="dot"></span>'+CATS[k].name+' <b>'+count+'</b></button>';
+  }).join("");
+
+  chips.addEventListener("click",function(e){
+    const b=e.target.closest(".chip"); if(!b) return;
+    const k=b.getAttribute("data-cat");
+    if(state.cats.has(k)) state.cats.delete(k); else state.cats.add(k);
+    b.classList.toggle("on",state.cats.has(k));
+    b.classList.toggle("off",!state.cats.has(k));
+    render();
+  });
+
+  const provSel=$("#prov");
+  const provCounts={};
+  SITES.forEach(function(s){ provCounts[s.p]=(provCounts[s.p]||0)+1; });
+  const provs=Object.keys(provCounts).sort(function(a,b){ return PROV_ORDER.indexOf(a)-PROV_ORDER.indexOf(b); });
+  provSel.innerHTML='<option value="all">全部省份</option>'+provs.map(function(p){ return '<option value="'+p+'">'+p+'（'+provCounts[p]+'）</option>'; }).join("");
+  if(state.prov !== "all") provSel.value = state.prov;
+  provSel.addEventListener("change",function(){ state.prov=provSel.value; render(); });
+
+  const eraSel=$("#era");
+  eraSel.addEventListener("change",function(){ state.era=eraSel.value; render(); });
+
+  let qtimer=null;
+  const qInput=$("#q");
+  if(initialQ) qInput.value = initialQ;
+  qInput.addEventListener("input",function(){
+    clearTimeout(qtimer);
+    qtimer=setTimeout(function(){ state.q=qInput.value.trim().toLowerCase(); render(); },120);
+  });
+
+  $("#list").addEventListener("click",function(e){
+    const el=e.target.closest(".site"); if(!el) return;
+    focusSite(el.getAttribute("data-id"));
+  });
+
+  $("#reset").addEventListener("click",function(){
+    state.cats=new Set(Object.keys(CATS)); state.q=""; state.prov="all"; state.era="all"; state.selected=null;
+    qInput.value=""; provSel.value="all"; eraSel.value="all";
+    $$(".chip").forEach(function(c){ c.classList.add("on"); c.classList.remove("off"); });
+    render(); fitAll(); toast("已重置筛选");
+  });
+
+  $("#fit").addEventListener("click",fitAll);
+  $("#random").addEventListener("click",function(){
+    if(!filtered.length){ toast("当前筛选下没有地点"); return; }
+    const s=filtered[Math.floor(Math.random()*filtered.length)];
+    focusSite(s.id); toast("带你去听故事："+s.n);
+  });
+
+  const sidebar=$("#sidebar"), scrim=$("#scrim");
+  $("#menu").addEventListener("click",function(){ sidebar.classList.add("open"); scrim.classList.add("show"); });
+  scrim.addEventListener("click",function(){ sidebar.classList.remove("open"); scrim.classList.remove("show"); });
+
+  let locateMarker=null;
+  $("#locate").addEventListener("click",function(){
+    if(!navigator.geolocation){ toast("当前浏览器不支持定位"); return; }
+    toast("正在定位…");
+    map.locate({setView:true,maxZoom:13,enableHighAccuracy:true,timeout:8000});
+  });
+  map.on("locationfound",function(e){
+    if(locateMarker) map.removeLayer(locateMarker);
+    locateMarker=L.marker(e.latlng,{icon:L.divIcon({className:"mao-icon",html:'<div class="locate-dot"></div>',iconSize:[14,14],iconAnchor:[7,7]})}).addTo(map).bindPopup("你在这里");
+    locateMarker.openPopup();
+    toast("已定位到当前位置");
+  });
+  map.on("locationerror",function(){ toast("定位失败，请检查浏览器权限"); });
+
+  /* modal */
+  const modal=$("#modal");
+  function openModal(){ modal.classList.add("open"); }
+  function closeModal(){ modal.classList.remove("open"); }
+  $("#about").addEventListener("click",openModal);
+  $("#modal-close").addEventListener("click",closeModal);
+  modal.addEventListener("click",function(e){ if(e.target===modal) closeModal(); });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape"){ closeModal(); sidebar.classList.remove("open"); scrim.classList.remove("show"); }
+    if(e.key==="/" && document.activeElement!==qInput && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){
+      e.preventDefault(); qInput.focus();
+    }
+  });
+
+  /* toast */
+  let toastTimer=null;
+  function toast(msg){
+    const el=$("#toast"); el.textContent=msg; el.classList.add("show");
+    clearTimeout(toastTimer); toastTimer=setTimeout(function(){ el.classList.remove("show"); },2200);
+  }
+
+  /* initial */
+  function hashId(){
+    try{ return decodeURIComponent((location.hash||"").replace(/^#/,"")); }catch(e){ return ""; }
+  }
+
+  render();
+  fitAll();
+  setTimeout(function(){
+    const hid=hashId();
+    if(hid && SITES.some(function(s){return s.id===hid;})) focusSite(hid);
+  },900);
+
+  const hint=$("#hint");
+  setTimeout(function(){ hint.classList.add("hide"); },6500);
+
+  window.addEventListener("hashchange",function(){
+    const id=hashId();
+    if(id && SITES.some(function(s){return s.id===id;})) focusSite(id);
+  });
+
+  /* dataset summary */
+  $("#st-total").textContent=SITES.length;
+  $("#st-prov").textContent=new Set(SITES.map(function(s){return s.p;})).size;
+  $("#st-major").textContent=SITES.filter(function(s){return s.major;}).length;
+  $("#st-story").textContent=SITES.filter(function(s){return !!s.st;}).length;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Dependencies
+node_modules/
+
+# Local env
+.env
+.env.*
+
+# Temporary previews
+*.tmp
+*.bak

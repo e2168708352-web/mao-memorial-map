@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>山河印记 | 毛泽东塑像与红色地标地图</title>
+<meta name="description" content="中国大陆 99 处毛泽东塑像、铜像、纪念地与标语题词的交互地图。每个地点都有一段背后的故事，支持筛选、搜索与一键导航。">
+<meta name="theme-color" content="#a92d24">
+<meta property="og:title" content="山河印记 | 毛泽东塑像与红色地标地图">
+<meta property="og:description" content="99 处地点，29 个省级行政区，99 段故事。一张由公开资料与地方记忆拼成的交互地图。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/map-preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html" aria-label="山河印记首页">
+      <span class="seal">毛</span>
+      <span class="brand-text"><b>山河印记</b><span>MAO MEMORIAL MAP</span></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="打开导航" aria-expanded="false">☰</button>
+    <nav class="nav" aria-label="主导航">
+      <a href="index.html" class="active">首页</a>
+      <a href="map.html">交互地图</a>
+      <a href="stories.html">故事档案</a>
+      <a href="about.html">关于与来源</a>
+      <a class="nav-gh" href="https://github.com/e2168708352-web/mao-memorial-map" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy reveal">
+      <p class="eyebrow">A PEOPLE'S MAP OF MEMORY · 2026</p>
+      <h1>在山河之间，<br><em>遇见一代人的记忆</em></h1>
+      <p class="lede">从韶山冲的农舍，到沈阳中山广场的群雕；从哈尔滨被埋入地下又重见天日的塑像，到喀什市民自发守护的广场——一张由公开资料与地方记忆拼成的毛泽东塑像地图。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="map.html">打开交互地图 <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="stories.html">先读 99 段故事</a>
+      </div>
+      <p class="micro"><b>99</b> 处地点 · <b>29</b> 个省级行政区 · <b>33</b> 处重点 · 非官方名录，持续修订</p>
+    </div>
+    <div class="hero-visual reveal">
+      <figure class="map-frame">
+        <div class="frame-shell">
+          <div class="frame-bar"><i></i><i></i><i></i><span class="url">mao-memorial-map / 交互地图</span></div>
+          <a href="map.html" aria-label="打开交互地图"><img src="assets/map-preview.jpg" alt="毛泽东塑像与红色地标交互地图预览" loading="eager"></a>
+        </div>
+        <div class="map-badge"><b>99</b> 处地点<br>29 个省级行政区</div>
+        <figcaption class="frame-caption"><span>高德标准底图 · 卫星影像可切换</span><span>点击进入全屏地图 →</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="stats-band" aria-label="数据概览">
+    <div class="stats-inner">
+      <div class="stat"><b data-count="99">99</b><span>处地点</span></div>
+      <div class="stat"><b data-count="29">29</b><span>个省级行政区</span></div>
+      <div class="stat"><b data-count="33">33</b><span>处重点地点</span></div>
+      <div class="stat"><b data-count="99">99</b><span>段背景故事</span></div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="categories">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">WHAT'S INSIDE</p>
+        <h2>一张地图，四种记忆</h2>
+      </div>
+      <p>塑像、铜像、纪念地与标语题词相互交织。一个地点可能同时属于多个类别，分类计数因此会重叠。</p>
+    </div>
+    <div class="cat-grid">
+      <a class="cat-card" style="--c:#a92d24" href="map.html?cat=statue">
+        <div class="cat-top"><span class="cat-num" data-count="65">65</span><span class="cat-mark">塑</span></div>
+        <h3>塑像</h3>
+        <p>校园、广场、厂区里的水泥与石材雕像，多数建于 1960 年代。</p>
+        <span class="go">在地图上查看</span>
+      </a>
+      <a class="cat-card" style="--c:#b07d1a" href="map.html?cat=bronze">
+        <div class="cat-top"><span class="cat-num" data-count="10">10</span><span class="cat-mark">铜</span></div>
+        <h3>铜像</h3>
+        <p>从韶山、西柏坡到喀什，铜像往往与纪念广场和重要历史节点相连。</p>
+        <span class="go">在地图上查看</span>
+      </a>
+      <a class="cat-card" style="--c:#2f6f8f" href="map.html?cat=memorial">
+        <div class="cat-top"><span class="cat-num" data-count="26">26</span><span class="cat-mark">馆</span></div>
+        <h3>纪念地</h3>
+        <p>故居、会址、纪念馆与革命旧址，是理解塑像背后历史的地点。</p>
+        <span class="go">在地图上查看</span>
+      </a>
+      <a class="cat-card" style="--c:#3f7d4e" href="map.html?cat=slogan">
+        <div class="cat-top"><span class="cat-num" data-count="15">15</span><span class="cat-mark">语</span></div>
+        <h3>标语题词</h3>
+        <p>城楼、会址、厂区与校园里仍可见到的标语、题词和语录景观。</p>
+        <span class="go">在地图上查看</span>
+      </a>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="num">01 / INDEX</div>
+        <h3>不是完整名录，而是一张索引</h3>
+        <p>公开资料中没有全国现存塑像的权威统计。每个点位尽量给出年代、材质、地址与来源，方便继续核实。</p>
+      </div>
+      <div class="feature">
+        <div class="num">02 / STORY</div>
+        <h3>每个坐标，都有一段故事</h3>
+        <p>建像潮、拆除潮、迁移、埋藏与重立。故事让一个坐标变成地方记忆，也让“看塑像”不只是打卡。</p>
+      </div>
+      <div class="feature">
+        <div class="num">03 / FIELD</div>
+        <h3>为实地探访而做</h3>
+        <p>高德、百度、OSM 三种导航入口，卫星底图可切换，手机端有侧栏列表。出发前仍请核实开放信息。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="selected-stories">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">SELECTED STORIES</p>
+        <h2>先读六段，再打开地图</h2>
+      </div>
+      <a class="section-link" href="stories.html">浏览全部 99 段故事 →</a>
+    </div>
+    <div class="story-grid">
+      <article class="story-preview">
+        <div class="story-meta"><span class="tag tag-bronze">铜像</span><span class="tag tag-memorial">纪念地</span><span>湖南 · 湘潭·韶山</span></div>
+        <h3><a href="stories.html#shaoshan-bronze">韶山毛泽东铜像广场</a></h3>
+        <p>1993 年，为纪念毛泽东诞辰 100 周年，韶山立起这尊通高 10.1 米的铜像。揭幕前后，当地流传着“日月同辉”、寒冬杜鹃绽放等说法。</p>
+        <div class="story-foot"><span>1993 年</span><a href="map.html#shaoshan-bronze">地图定位 →</a></div>
+      </article>
+      <article class="story-preview">
+        <div class="story-meta"><span class="tag tag-statue">塑像</span><span>黑龙江 · 哈尔滨</span></div>
+        <h3><a href="stories.html#haerbin-aijian">哈尔滨爱建社区城市源广场</a></h3>
+        <p>这尊塑像原在哈尔滨车辆厂。上世纪 80 年代，职工没有把它砸毁，而是整体放倒、埋入地下；2002 年开发建设时，它又被挖出重立。</p>
+        <div class="story-foot"><span>20 世纪 60 年代</span><a href="map.html#haerbin-aijian">地图定位 →</a></div>
+      </article>
+      <article class="story-preview">
+        <div class="story-meta"><span class="tag tag-statue">塑像</span><span>新疆 · 喀什</span></div>
+        <h3><a href="stories.html#kashgar">喀什人民广场</a></h3>
+        <p>当地流传着这样一个故事：上世纪 80 年代各地陆续拆除毛泽东塑像时，喀什的维吾尔族市民自发围在塑像周围保护，使它得以保留。</p>
+        <div class="story-foot"><span>1969 年</span><a href="map.html#kashgar">地图定位 →</a></div>
+      </article>
+      <article class="story-preview">
+        <div class="story-meta"><span class="tag tag-statue">塑像</span><span>江苏 · 南京·栖霞</span></div>
+        <h3><a href="stories.html#nanjing-oct">南京十月村毛主席塑像广场</a></h3>
+        <p>1956 年 1 月，毛泽东视察南京十月村；1967 年，村民在当年他站立的地方集资建起塑像。它后来成为市级文物保护单位。</p>
+        <div class="story-foot"><span>1967 年</span><a href="map.html#nanjing-oct">地图定位 →</a></div>
+      </article>
+      <article class="story-preview">
+        <div class="story-meta"><span class="tag tag-statue">塑像</span><span>湖南 · 长沙</span></div>
+        <h3><a href="stories.html#juzizhou">橘子洲青年毛泽东雕塑</a></h3>
+        <p>雕塑高 32 米、长 83 米，由 8000 多块永定红花岗岩拼接，表现 1925 年在橘子洲头思考中国命运的青年毛泽东。</p>
+        <div class="story-foot"><span>2009 年</span><a href="map.html#juzizhou">地图定位 →</a></div>
+      </article>
+      <article class="story-preview">
+        <div class="story-meta"><span class="tag tag-bronze">铜像</span><span class="tag tag-memorial">纪念地</span><span>河北 · 石家庄·平山</span></div>
+        <h3><a href="stories.html#xibaipo">西柏坡纪念馆</a></h3>
+        <p>1948 年，中共中央来到西柏坡，在这里指挥三大战役、召开七届二中全会。广场上的五大书记铜像，纪念“新中国从这里走来”的岁月。</p>
+        <div class="story-foot"><span>1948—1949</span><a href="map.html#xibaipo">地图定位 →</a></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section reveal" id="how-to">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">HOW TO USE</p>
+        <h2>三步，开始一趟纸上寻访</h2>
+      </div>
+      <p>地图不是路线推荐，也不代表官方立场。它更像一本可以缩放的地方志，供你按图索骥、继续查证。</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>选一个范围</h3>
+        <p>按分类、省份、年代筛选，或直接搜索地名、人名、口号和故事关键词。</p>
+      </div>
+      <div class="step">
+        <h3>点开一个标记</h3>
+        <p>查看地址、年代、材质和“背后的故事”，再决定它是否值得专程去看。</p>
+      </div>
+      <div class="step">
+        <h3>出发前再核实</h3>
+        <p>一键跳转高德、百度或 OSM。校园、军校、场馆和营区，请先确认是否对外开放。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="data-note reveal">
+    <div class="data-note-inner">
+      <div>
+        <p class="eyebrow">DATA &amp; BOUNDARIES</p>
+        <h2>这是一张民间地图，不是官方名录</h2>
+        <p>公开资料中没有全国现存塑像的权威统计；本图按公开报道、校史、地方文物信息整理，难免遗漏或过时。甘肃、西藏暂未收录到可核实的大型室外塑像点位，地图留空，不代表当地没有。坐标是近似值，塑像可能迁移、拆除或修缮。</p>
+      </div>
+      <a class="btn btn-ghost" href="about.html">阅读方法与来源 →</a>
+    </div>
+  </section>
+
+  <section class="section reveal" id="opensource">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">OPEN SOURCE</p>
+        <h2>一张可以一起修订的地图</h2>
+      </div>
+      <p>页面、地图和故事生成脚本全部开源。发现错漏、迁移或新的点位，欢迎通过 GitHub Issue 提交线索。</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="num">01 / STATIC</div>
+        <h3>纯静态，打开即用</h3>
+        <p>单文件 Leaflet 地图，配合高德瓦片与 marker clustering，不需要后端服务。</p>
+      </div>
+      <div class="feature">
+        <div class="num">02 / READABLE</div>
+        <h3>数据可读、可复现</h3>
+        <p>所有点位写在 map.html 中，故事档案由 Node 脚本生成，方便审阅与批量修订。</p>
+      </div>
+      <div class="feature">
+        <div class="num">03 / CORRECTABLE</div>
+        <h3>欢迎纠错与补充</h3>
+        <p>这不是定本。迁移、关闭、拆除、年代修正，或你身边被遗漏的一处，都可以提交。</p>
+      </div>
+    </div>
+    <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-primary" href="https://github.com/e2168708352-web/mao-memorial-map" target="_blank" rel="noopener">在 GitHub 查看项目 ↗</a>
+      <a class="btn btn-ghost" href="https://github.com/e2168708352-web/mao-memorial-map/issues" target="_blank" rel="noopener">提交一条线索</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="seal">毛</span>
+      <div><b>山河印记</b><span>MAO MEMORIAL MAP</span></div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="map.html">交互地图</a>
+      <a href="stories.html">故事档案</a>
+      <a href="about.html">关于与来源</a>
+      <a href="https://github.com/e2168708352-web/mao-memorial-map" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <p class="footer-note">非官方完整名录，仅供参观、研究与学习参考。塑像可能迁移、拆除或修缮，实地到访前请核实开放信息。故事中的年代、人物与细节可能存在不同版本。© <span data-year>2026</span> 山河印记 · 代码以 MIT 许可证开源。</p>
+  </div>
+</footer>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>关于与来源 | 山河印记 · 毛泽东塑像与红色地标地图</title>
+<meta name="description" content="山河印记项目说明：收录标准、数据来源、坐标与年代处理、已知局限，以及如何通过 GitHub 参与修订。">
+<meta name="theme-color" content="#a92d24">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html" aria-label="山河印记首页">
+      <span class="seal">毛</span>
+      <span class="brand-text"><b>山河印记</b><span>MAO MEMORIAL MAP</span></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="打开导航" aria-expanded="false">☰</button>
+    <nav class="nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="map.html">交互地图</a>
+      <a href="stories.html">故事档案</a>
+      <a href="about.html" class="active">关于与来源</a>
+      <a class="nav-gh" href="https://github.com/e2168708352-web/mao-memorial-map" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <p class="eyebrow">ABOUT THE PROJECT</p>
+    <h1>关于这张<em>民间地图</em></h1>
+    <p>它不是官方名录，也不是一次完成的“全国普查”。它是一份持续修订的公开索引：把散落在报道、校史、地方文物信息与纪念馆展陈里的地点，放回同一张地图。</p>
+  </section>
+
+  <div class="page-section">
+    <div class="about-layout">
+      <aside class="about-toc" aria-label="页内目录">
+        <b>目录</b>
+        <a href="#what">项目是什么</a>
+        <a href="#scope">收录标准</a>
+        <a href="#numbers">数据概览</a>
+        <a href="#stories">故事怎么写</a>
+        <a href="#coordinates">坐标与年代</a>
+        <a href="#limits">已知局限</a>
+        <a href="#sources">主要来源</a>
+        <a href="#contribute">如何贡献</a>
+        <a href="#license">开源与许可</a>
+      </aside>
+
+      <div class="prose">
+        <h2 id="what">项目是什么</h2>
+        <p>“山河印记”是一张中国大陆毛泽东塑像、铜像、纪念地与相关标语题词的交互地图。它把公开可见的室外塑像、纪念馆/故居、革命旧址与标语景观放在同一套坐标体系里，并为每个地点配一段背景故事。</p>
+        <p>项目目前收录 <strong>99 处地点</strong>，覆盖 <strong>29 个省级行政区</strong>，其中 <strong>33 处</strong>标为重点。数据版本为 <strong>2026 年 11 月</strong>。</p>
+        <blockquote>这张地图的目标不是给出“标准答案”，而是降低查证成本：先让你知道哪里有、大概什么年代、背后发生了什么，再带着问题去现场或档案馆继续核对。</blockquote>
+
+        <h2 id="scope">收录标准</h2>
+        <p>收录范围限定为中国大陆境内，优先选择公开资料可核实、目前仍有实物或遗址可寻的点位：</p>
+        <ul>
+          <li><strong>室外塑像/铜像：</strong>校园、广场、厂区、纪念地中的大型毛泽东雕像，重点是 1960—1970 年代建造、目前仍存者。</li>
+          <li><strong>纪念地：</strong>毛泽东故居、旧居、会址、纪念馆、革命旧址，以及与他生平重要事件直接相关的场所。</li>
+          <li><strong>标语题词：</strong>城楼、会址、厂区、校园等公共空间中仍可见的毛泽东语录、题词和时代标语景观。</li>
+          <li><strong>校园点位：</strong>主要依据 2018 年网络流传的“35 所大学”名单，并结合校方资料与公开报道核对；名单此后可能有调整。</li>
+        </ul>
+        <p>不追求收录室内小型像、私人收藏、纪念章、印刷品等；也不把仅有文字记载、已无实物可寻的点位作为重点。一个地点可能同时属于多个类别，例如“铜像 + 纪念地”，因此分类计数会重叠。</p>
+
+        <h2 id="numbers">数据概览</h2>
+        <table class="stat-table">
+          <thead><tr><th>项目</th><th>数量</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>地点总数</td><td>99</td><td>去重后的独立点位</td></tr>
+            <tr><td>省级行政区</td><td>29</td><td>中国大陆省级行政区</td></tr>
+            <tr><td>重点地点</td><td>33</td><td>体量、历史意义或保存状态较突出者</td></tr>
+            <tr><td>塑像</td><td>65</td><td>含水泥、石材等室外雕像</td></tr>
+            <tr><td>铜像</td><td>10</td><td>含铜质、铸铁等金属像</td></tr>
+            <tr><td>纪念地</td><td>26</td><td>故居、会址、纪念馆、旧址</td></tr>
+            <tr><td>标语题词</td><td>15</td><td>标语、题词、语录景观</td></tr>
+            <tr><td>背景故事</td><td>99</td><td>每个地点一段，可在地图弹窗与故事档案中阅读</td></tr>
+          </tbody>
+        </table>
+        <p>甘肃、西藏暂未收录到可核实的现存大型室外塑像点位，地图留空，不代表当地一定没有。若你有可靠线索，欢迎补充。</p>
+
+        <h2 id="stories">故事怎么写</h2>
+        <p>每个地点的“背后的故事”侧重人物、事件与地方记忆，而不是塑像尺寸。写作时优先使用可公开查证的资料：新闻报道、校史、地方志、纪念馆展陈与地方文物部门信息。对于校园、厂区等公开资料较少的点位，只写到可核实的大背景，不虚构具体人物或情节。</p>
+        <p>涉及民间传说、口述记忆或不同说法的内容，文中会用“相传”“当地流传”“据当地资料”等字样提示。例如喀什塑像在 1980 年代被市民围护的故事，就属于地方记忆，而不是档案定论。读者应把这些段落当作继续查证的线索，而不是最终结论。</p>
+
+        <h2 id="coordinates">坐标与年代</h2>
+        <p>坐标采用 WGS-84 近似值，校园、广场、厂区类点位通常标在主要出入口或雕像所在的大致位置，不保证能直接走到像前。底图使用高德地图（GCJ-02），页面脚本已做坐标纠偏；卫星影像同样来自高德。</p>
+        <p>年代字段对塑像一般指落成年代，对旧址、纪念馆则指相关历史年代，仅作浏览与筛选参考。部分点位的建造年代在公开资料中说法不一，地图取较常见的一种；如果你掌握更准确的碑刻、档案或校史信息，欢迎指正。</p>
+        <p>“高德导航”“百度地图”“OSM”按钮会跳转到对应平台。由于坐标是近似值，实地导航请以导航软件搜索到的地点名称为准，不要直接以地图上的标记点作为唯一依据。</p>
+
+        <h2 id="limits">已知局限</h2>
+        <ul>
+          <li><strong>不是完整名录。</strong>公开资料中没有任何一份“全国现存毛主席塑像”权威统计；本图必然有遗漏，也可能包含已经迁移、拆除或不再公开可见的点位。</li>
+          <li><strong>现状会变化。</strong>塑像可能因城市改造、校园建设、文物保护或单位管理而移动、围挡、修缮或关闭。地图更新有滞后。</li>
+          <li><strong>开放信息不完整。</strong>校园、军校、营区、医院、厂区等点位不一定对公众开放。地图标注“可见”不等于“可进入”，请尊重现场管理。</li>
+          <li><strong>故事存在不同版本。</strong>同一事件在不同报道、口述与地方记忆中可能有细节差异；文中已尽量提示不确定性，但仍可能有误。</li>
+          <li><strong>不是官方立场。</strong>本项目为民间整理，仅供参观、研究与学习参考，不代表任何机构或官方立场。</li>
+        </ul>
+
+        <h2 id="sources">主要来源</h2>
+        <p>以下是项目早期整理时使用的一部分公开来源。具体点位的单独报道链接，也放在地图弹窗的“相关报道”中。</p>
+        <div class="source-list">
+          <a href="https://www.sohu.com/a/122548284_449841" target="_blank" rel="noopener">搜狐：全国各地的毛主席塑像（2016）<span>用于早期点位与图片线索</span></a>
+          <a href="https://www.sohu.com/a/235186505_557768" target="_blank" rel="noopener">搜狐：盘点中国至今仍耸立的那些毛主席雕像（2018）<span>用于现存塑像线索</span></a>
+          <a href="https://www.hunantoday.cn/news/xhn/201803/16144100.html" target="_blank" rel="noopener">华声在线：树立毛主席雕像的35所大学（2018）<span>用于校园塑像名单</span></a>
+          <a href="https://www.chinanews.com.cn/sh/2013/12-10/5601814.shtml" target="_blank" rel="noopener">中新网：济南尚存5尊大型毛泽东塑像（2013）<span>用于济南点位与数量</span></a>
+          <a href="https://baijiahao.baidu.com/s?id=1647705833452008923" target="_blank" rel="noopener">西宁晚报：全国最大铁铸毛主席像修缮（2019）<span>用于西宁山川集团塑像</span></a>
+          <a href="http://culture.people.com.cn/n/2014/0310/c22219-24585102.html" target="_blank" rel="noopener">人民网：武汉剧院毛泽东雕像（2014）<span>用于武汉剧院点位</span></a>
+          <a href="https://travel.sohu.com/a/1011975442_121123814" target="_blank" rel="noopener">搜狐：抚顺工人文化宫旧址毛主席塑像<span>用于抚顺点位与坐标</span></a>
+          <a href="https://wwj.zhengzhou.gov.cn/" target="_blank" rel="noopener">郑州市文物局：毛泽东塑像（省保）<span>用于郑州人民广场点位</span></a>
+        </div>
+        <p>此外还参考了各地点纪念馆展陈、学校校史、地方志与地方文物部门公开信息。来源链接会随项目更新继续补充；如果你发现更可靠的一手资料，欢迎在 GitHub Issue 中附上。</p>
+
+        <h2 id="contribute">如何贡献</h2>
+        <p>这是一个开源项目，欢迎纠错、补充和修订。你可以通过 GitHub Issues 提交：</p>
+        <ul>
+          <li>点位的迁移、拆除、关闭或重新开放；</li>
+          <li>更准确的地址、坐标、建造年代、材质与尺寸；</li>
+          <li>遗漏的塑像、铜像、纪念地或标语题词；</li>
+          <li>故事中的事实错误、不同说法或可补充的一手来源；</li>
+          <li>页面显示、移动端适配或无障碍方面的改进。</li>
+        </ul>
+        <div class="contribute-box">
+          <h3>提交一条线索</h3>
+          <p>最好附上地点名称、省市县/区、大致坐标或地址、年代、现状，以及至少一条可核实的来源链接。若涉及校园、军校、营区等不开放场所，请只提供公开信息，不要拍摄或发布不允许公开的内容。</p>
+          <a class="btn btn-primary" href="https://github.com/e2168708352-web/mao-memorial-map/issues" target="_blank" rel="noopener">打开 GitHub Issues ↗</a>
+        </div>
+
+        <h2 id="license">开源与许可</h2>
+        <p>项目代码（HTML/CSS/JavaScript 与生成脚本）以 <strong>MIT License</strong> 开源，可自由使用、修改与分发，请保留版权与许可声明。地图数据与故事文本由项目整理，引用时请注明“山河印记 / mao-memorial-map”，并尽可能回到原始来源核对。</p>
+        <p>地图依赖 <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>（BSD-2-Clause）与 <a href="https://github.com/Leaflet/Leaflet.markercluster" target="_blank" rel="noopener">Leaflet.markercluster</a>（MIT）；底图瓦片来自高德地图，使用须遵守其服务条款。项目不存储或再分发瓦片图片。</p>
+        <p>最后更新：2026 年 11 月 2 日。维护者：<a href="https://github.com/e2168708352-web" target="_blank" rel="noopener">@e2168708352-web</a>。</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="seal">毛</span>
+      <div><b>山河印记</b><span>MAO MEMORIAL MAP</span></div>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">首页</a>
+      <a href="map.html">交互地图</a>
+      <a href="stories.html">故事档案</a>
+      <a href="about.html">关于与来源</a>
+      <a href="https://github.com/e2168708352-web/mao-memorial-map" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <p class="footer-note">非官方完整名录，仅供参观、研究与学习参考。塑像可能迁移、拆除或修缮，实地到访前请核实开放信息。故事中的年代、人物与细节可能存在不同版本。© <span data-year>2026</span> 山河印记 · 代码以 MIT 许可证开源。</p>
+  </div>
+</footer>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
