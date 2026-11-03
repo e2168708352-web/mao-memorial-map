@@ -25,7 +25,7 @@
 | `map.html` | 交互地图：筛选、搜索、弹窗故事、导航、定位 |
 | `stories.html` | 99 段故事档案：按省份分组，支持关键词与省份筛选 |
 | `about.html` | 收录标准、数据来源、坐标处理、已知局限与贡献方式 |
-| `scripts/build-stories.js` | 从 `map.html` 的数据生成 `stories.html` |
+| `scripts/build-stories.js` | 从 `map.html` 的数据生成 `stories.html`（自动带上 `assets/img/photos.json` 里的配图） |
 
 ## 本地预览
 
@@ -54,6 +54,21 @@ node scripts/build-stories.js
 仓库已包含 `.github/workflows/pages.yml`。推送到 `main` 后，在仓库 **Settings → Pages** 中把 Source 设为 **GitHub Actions**，工作流会自动构建并发布。
 
 预计地址：<https://e2168708352-web.github.io/mao-memorial-map/>
+
+## 实景配图
+
+95 个地点配有实景照片，存放在 `assets/img/`（长边 860px、JPEG，合计约 7.4 MB），来源与对应关系记录在 `assets/img/photos.json`：
+
+| 字段 | 含义 |
+| --- | --- |
+| `f` | 图片文件名 |
+| `s` | 原页面链接（点击图源可回到原处） |
+| `h` | 来源站点 |
+
+- 地图弹窗、左侧列表、故事卡片和首页影像墙都使用这批图片，全部 `loading="lazy"`；
+- 照片为公开网络检索所得，**仅用于地点介绍，不作商业用途**，版权归原作者或原发布机构所有；如你是权利人希望撤下某张图，请提 Issue；
+- 哈尔滨爱建社区城市源广场、山东省立医院、上海理工大学、友谊县龙谊集团四处暂未找到可用实景图，因此没有配图；
+- 配图与地点的一一对应关系依据检索来源页面判断，个别照片可能拍摄于数年前，塑像或环境已有变化。
 
 ## 数据与边界
 

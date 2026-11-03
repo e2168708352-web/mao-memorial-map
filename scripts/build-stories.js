@@ -9,6 +9,8 @@ const root = path.resolve(__dirname, "..");
 const mapPath = path.join(root, "map.html");
 const outPath = path.join(root, "stories.html");
 const html = fs.readFileSync(mapPath, "utf8");
+const photosPath = path.join(root, "assets", "img", "photos.json");
+const PHOTOS = fs.existsSync(photosPath) ? JSON.parse(fs.readFileSync(photosPath, "utf8")) : {};
 
 const start = html.indexOf("const CATS =");
 const end = html.indexOf("(function(){");
@@ -60,6 +62,13 @@ PROV_ORDER.forEach((prov) => {
     const majorTag = site.major ? '<span class="tag tag-major">重点</span>' : "";
     const searchText = [site.n, site.p, site.c, site.m, site.d, site.st, site.cat.map((c) => CATS[c].name).join(" ")].join(" ");
     body += '    <article class="story-card" id="' + esc(site.id) + '" data-prov="' + esc(site.p) + '" data-text="' + esc(searchText) + '">\n';
+    const ph = PHOTOS[site.id];
+    if (ph) {
+      const credit = ph.s
+        ? '<a href="' + esc(ph.s) + '" target="_blank" rel="noopener nofollow">图源 ' + esc(ph.h) + "</a>"
+        : "公开网络图片";
+      body += '      <figure class="story-photo"><img src="assets/img/' + esc(ph.f) + '" alt="" loading="lazy" width="860" height="484"><figcaption>' + credit + "</figcaption></figure>\n";
+    }
     body += '      <div class="story-meta">' + tags + majorTag + "<span>" + esc(site.p) + " · " + esc(site.c) + "</span><span>" + esc(yearText(site.y)) + "</span></div>\n";
     body += '      <h3><a href="map.html#' + esc(site.id) + '">' + esc(site.n) + "</a></h3>\n";
     body += '      <p class="desc">' + esc(site.d) + "</p>\n";

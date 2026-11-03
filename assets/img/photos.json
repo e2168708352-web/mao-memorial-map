@@ -1,0 +1,477 @@
+{
+ "mao-memorial": {
+  "f": "site-mao-memorial.jpg",
+  "s": "http://www.cq.xinhuanet.com/20240430/32e0cbe6982d4140ad147d5878194fc8/c.html",
+  "h": "cq.xinhuanet.com"
+ },
+ "ustb": {
+  "f": "site-ustb.jpg",
+  "s": "https://epaper.voc.com.cn/hnrb/html/2024-04/18/content_1680973.htm",
+  "h": "epaper.voc.com.cn"
+ },
+ "tiananmen": {
+  "f": "site-tiananmen.jpg",
+  "s": "https://699pic.com/tupian-501614380.html",
+  "h": "699pic.com"
+ },
+ "xinhuamen": {
+  "f": "site-xinhuamen.jpg",
+  "s": "https://dp.pconline.com.cn/photo/1702949_3.html",
+  "h": "dp.pconline.com.cn"
+ },
+ "cugb": {
+  "f": "site-cugb.jpg",
+  "s": "https://photo.sina.cn/album_56_52240_194474.htm?vt=4",
+  "h": "photo.sina.cn"
+ },
+ "buct": {
+  "f": "site-buct.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "bjtu": {
+  "f": "site-bjtu.jpg",
+  "s": "http://www.hinews.cn/news/system/2019/03/02/032043992.shtml",
+  "h": "www.hinews.cn"
+ },
+ "bsu": {
+  "f": "site-bsu.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "bupt": {
+  "f": "site-bupt.jpg",
+  "s": "https://zsb.bupt.edu.cn/info/1044/1695.htm",
+  "h": "zsb.bupt.edu.cn"
+ },
+ "sjz-plaza": {
+  "f": "site-sjz-plaza.jpg",
+  "s": "http://bbs.voc.com.cn/topic-6100207-2-1.html",
+  "h": "bbs.voc.com.cn"
+ },
+ "tjjt": {
+  "f": "site-tjjt.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "hunantoday.cn"
+ },
+ "ndu": {
+  "f": "site-ndu.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "mil-museum": {
+  "f": "site-mil-museum.jpg",
+  "s": "http://www.toptour.cn/index.php?m=content&amp;c=index&amp;a=show&amp;catid=16&amp;id=29738",
+  "h": "www.toptour.cn"
+ },
+ "dazhai": {
+  "f": "site-dazhai.jpg",
+  "s": "http://photo.china.com.cn/2013-12/25/content_30995935_4.htm",
+  "h": "photo.china.com.cn"
+ },
+ "sjztd": {
+  "f": "site-sjztd.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "sxu": {
+  "f": "site-sxu.jpg",
+  "s": "http://pic.voc.com.cn/pics/category/lists/cid/8.html?page=3",
+  "h": "pic.voc.com.cn"
+ },
+ "xibaipo": {
+  "f": "site-xibaipo.jpg",
+  "s": "http://zthd.cnr.cn/wtsjz/gqyx/201012/t20101224_507497597.html",
+  "h": "zthd.cnr.cn"
+ },
+ "shenyang": {
+  "f": "site-shenyang.jpg",
+  "s": "https://bbs.zol.com.cn/dcbbs/d268_187791_0.html",
+  "h": "bbs.zol.com.cn"
+ },
+ "baotou": {
+  "f": "site-baotou.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=607557",
+  "h": "vip.people.com.cn"
+ },
+ "fuxin": {
+  "f": "site-fuxin.jpg",
+  "s": "https://swj.fuxin.gov.cn/channel/12698/index.html",
+  "h": "swj.fuxin.gov.cn"
+ },
+ "cau": {
+  "f": "site-cau.jpg",
+  "s": "http://www.mzdbl.cn/huaji/huaji-11.html",
+  "h": "mzdbl.cn"
+ },
+ "dlut": {
+  "f": "site-dlut.jpg",
+  "s": "http://news.china.com.cn/zhenxiang/2017-06/20/content_41062491.htm",
+  "h": "news.china.com.cn"
+ },
+ "fushun": {
+  "f": "site-fushun.jpg",
+  "s": "https://liangweiie.tuchong.com/133601162/",
+  "h": "liangweiie.tuchong.com"
+ },
+ "changchun": {
+  "f": "site-changchun.jpg",
+  "s": "http://bbs.voc.com.cn/topic-6100207-2-1.html",
+  "h": "bbs.voc.com.cn"
+ },
+ "tongji": {
+  "f": "site-tongji.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=1273291&amp;pid=8781696",
+  "h": "vip.people.com.cn"
+ },
+ "hrbeu": {
+  "f": "site-hrbeu.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "fudan": {
+  "f": "site-fudan.jpg",
+  "s": "http://bbs.voc.com.cn/topic-6100207-1-1.html",
+  "h": "bbs.voc.com.cn"
+ },
+ "qqhe": {
+  "f": "site-qqhe.jpg",
+  "s": "http://news.cnwest.com/tongchuan/a/2020/03/13/18570574.html",
+  "h": "news.cnwest.com"
+ },
+ "ecust": {
+  "f": "site-ecust.jpg",
+  "s": "http://pic.voc.com.cn/pics/category/lists/cid/8.html",
+  "h": "pic.voc.com.cn"
+ },
+ "sh-mao-home": {
+  "f": "site-sh-mao-home.jpg",
+  "s": "https://news.voc.com.cn/news/201812/24499277.html",
+  "h": "news.voc.com.cn"
+ },
+ "nanjing-oct": {
+  "f": "site-nanjing-oct.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=1736815&amp;pid=12638559",
+  "h": "vip.people.com.cn"
+ },
+ "ecnu": {
+  "f": "site-ecnu.jpg",
+  "s": "https://pic.voc.com.cn/pics/category/lists/cid/8.html",
+  "h": "pic.voc.com.cn"
+ },
+ "zju": {
+  "f": "site-zju.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "ahmu": {
+  "f": "site-ahmu.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "xiaoying": {
+  "f": "site-xiaoying.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/202301/16708949.html",
+  "h": "www.hunantoday.cn"
+ },
+ "ahly": {
+  "f": "site-ahly.jpg",
+  "s": "http://xddag.swu.edu.cn/info/1070/1546.htm",
+  "h": "xddag.swu.edu.cn"
+ },
+ "jinggangshan": {
+  "f": "site-jinggangshan.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=76390",
+  "h": "vip.people.com.cn"
+ },
+ "ruijin": {
+  "f": "site-ruijin.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=1361975",
+  "h": "vip.people.com.cn"
+ },
+ "gutian": {
+  "f": "site-gutian.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=1246712&amp;pid=8559143",
+  "h": "vip.people.com.cn"
+ },
+ "fuzhou": {
+  "f": "site-fuzhou.jpg",
+  "s": "http://livechina.cctv.com/zbdcy/index.shtml?pageID=PAGEzUV15Df1gAh47d8DHtUF210929&interactionId=INTEiIM2P0BZxdcsHjhoNbWe210928&isPlaying=tjhh01",
+  "h": "livechina.cctv.com"
+ },
+ "anyuan": {
+  "f": "site-anyuan.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=1652046&amp;pid=11922945",
+  "h": "vip.people.com.cn"
+ },
+ "tonggu": {
+  "f": "site-tonggu.jpg",
+  "s": "https://tour.rednet.cn/content/2020/06/06/7319234.html",
+  "h": "tour.rednet.cn"
+ },
+ "wenjiashi": {
+  "f": "site-wenjiashi.jpg",
+  "s": "https://wdssx.rednet.cn/detail/3/202511/106.html",
+  "h": "wdssx.rednet.cn"
+ },
+ "jinan-chixia": {
+  "f": "site-jinan-chixia.jpg",
+  "s": "https://jnly.jinan.gov.cn/col38983/art/2025/art_38983_4782479.html",
+  "h": "jnly.jinan.gov.cn"
+ },
+ "jingba": {
+  "f": "site-jingba.jpg",
+  "s": "http://www.mzdbl.cn/huaji/huaji-11.html",
+  "h": "mzdbl.cn"
+ },
+ "sdnu": {
+  "f": "site-sdnu.jpg",
+  "s": "http://pic.voc.com.cn/pics/category/lists/cid/8.html",
+  "h": "pic.voc.com.cn"
+ },
+ "beiyuan": {
+  "f": "site-beiyuan.jpg",
+  "s": "http://jnwl.jinan.gov.cn/art/2022/11/1/art_90048_4777978.html",
+  "h": "jnwl.jinan.gov.cn"
+ },
+ "hebi": {
+  "f": "site-hebi.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=607557&amp;pid=4060515",
+  "h": "vip.people.com.cn"
+ },
+ "saas": {
+  "f": "site-saas.jpg",
+  "s": "https://news.ifeng.com/photo/special/maoxiang/",
+  "h": "news.ifeng.com"
+ },
+ "nanyang": {
+  "f": "site-nanyang.jpg",
+  "s": "http://sn.people.com.cn/GB/n2/2023/0105/c226647-40254881.html",
+  "h": "sn.people.com.cn"
+ },
+ "zz-plaza": {
+  "f": "site-zz-plaza.jpg",
+  "s": "http://bbs.voc.com.cn/topic-6100207-1-1.html",
+  "h": "bbs.voc.com.cn"
+ },
+ "nanjiecun": {
+  "f": "site-nanjiecun.jpg",
+  "s": "http://www.dashangu.com/postimg_8280742_10.html",
+  "h": "www.dashangu.com"
+ },
+ "luoyang": {
+  "f": "site-luoyang.jpg",
+  "s": "https://www.voc.com.cn/news/201907/25438597.html",
+  "h": "voc.com.cn"
+ },
+ "whu": {
+  "f": "site-whu.jpg",
+  "s": "http://guoqing.china.com.cn/zhuanti/node_8007200.htm",
+  "h": "guoqing.china.com.cn"
+ },
+ "henan-normal": {
+  "f": "site-henan-normal.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201803/16144100.html",
+  "h": "www.hunantoday.cn"
+ },
+ "wuhan-theatre": {
+  "f": "site-wuhan-theatre.jpg",
+  "s": "https://news.ifeng.com/photo/special/maoxiang/",
+  "h": "news.ifeng.com"
+ },
+ "hongqiqu": {
+  "f": "site-hongqiqu.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=1345135&amp;pid=9358647",
+  "h": "vip.people.com.cn"
+ },
+ "hust": {
+  "f": "site-hust.jpg",
+  "s": "https://m-xhncloud.voc.com.cn/news/detail/6550591.html",
+  "h": "m-xhncloud.voc.com.cn"
+ },
+ "wuhan-peasant": {
+  "f": "site-wuhan-peasant.jpg",
+  "s": "https://dsnews.zjol.com.cn/dsnews/system/2021/03/08/032939382.shtml",
+  "h": "dsnews.zjol.com.cn"
+ },
+ "shaoshan-bronze": {
+  "f": "site-shaoshan-bronze.jpg",
+  "s": "https://xt.rednet.cn/content/2021/12/22/10668759.html",
+  "h": "xt.rednet.cn"
+ },
+ "shaoshan-home": {
+  "f": "site-shaoshan-home.jpg",
+  "s": "https://hn.rednet.cn/content/646748/74/12614195.html",
+  "h": "hn.rednet.cn"
+ },
+ "juzizhou": {
+  "f": "site-juzizhou.jpg",
+  "s": "https://travel.voc.com.cn/article/201707/201707152136227835.html",
+  "h": "travel.voc.com.cn"
+ },
+ "hnu": {
+  "f": "site-hnu.jpg",
+  "s": "https://zx.zxy.hunanzx.gov.cn/szxapp/1/180/content_998743.html",
+  "h": "zx.zxy.hunanzx.gov.cn"
+ },
+ "cs-museum": {
+  "f": "site-cs-museum.jpg",
+  "s": "https://hunan.voc.com.cn/article/201705/201705101735124873.html",
+  "h": "hunan.voc.com.cn"
+ },
+ "xtu": {
+  "f": "site-xtu.jpg",
+  "s": "https://www.hunantoday.cn/news/xhn/201710/16172684.html",
+  "h": "www.hunantoday.cn"
+ },
+ "hunan-1st-normal": {
+  "f": "site-hunan-1st-normal.jpg",
+  "s": "http://news.cyol.com/gb/articles/2022-01/26/content_QGY2KijoY.html",
+  "h": "news.cyol.com"
+ },
+ "gz-peasant": {
+  "f": "site-gz-peasant.jpg",
+  "s": "http://gd.people.com.cn/n2/2021/0120/c162706-34538077.html",
+  "h": "gd.people.com.cn"
+ },
+ "nanning": {
+  "f": "site-nanning.jpg",
+  "s": "http://news.cyol.com/gb/articles/2025-09/25/content_qbXqq7cpdJ.html",
+  "h": "news.cyol.com"
+ },
+ "nudt": {
+  "f": "site-nudt.jpg",
+  "s": "http://bbs.voc.com.cn/topic-6100207-1-1.html",
+  "h": "bbs.voc.com.cn"
+ },
+ "danzhou": {
+  "f": "site-danzhou.jpg",
+  "s": "https://photo.sina.cn/album_56_52240_194474.htm?vt=4",
+  "h": "photo.sina.cn"
+ },
+ "cq-industrial": {
+  "f": "site-cq-industrial.jpg",
+  "s": "http://dangshi.people.com.cn/n/2013/1224/c85037-23936216.html",
+  "h": "dangshi.people.com.cn"
+ },
+ "cqmu": {
+  "f": "site-cqmu.jpg",
+  "s": "http://cq.people.com.cn/n2/2024/0101/c367698-40699809.html",
+  "h": "cq.people.com.cn"
+ },
+ "swu": {
+  "f": "site-swu.jpg",
+  "s": "http://pic.voc.com.cn/pics/category/lists/cid/8.html?page=3",
+  "h": "pic.voc.com.cn"
+ },
+ "guiyuan": {
+  "f": "site-guiyuan.jpg",
+  "s": "http://cq.people.com.cn/n2/2020/0804/c367668-34203502.html",
+  "h": "cq.people.com.cn"
+ },
+ "scu": {
+  "f": "site-scu.jpg",
+  "s": "https://cce.scu.edu.cn/mana/view/home/news.do?id=5223",
+  "h": "cce.scu.edu.cn"
+ },
+ "chengdu": {
+  "f": "site-chengdu.jpg",
+  "s": "https://bbs.zol.com.cn/dcbbs/d34019_79375.html",
+  "h": "bbs.zol.com.cn"
+ },
+ "cqu": {
+  "f": "site-cqu.jpg",
+  "s": "https://civil.cqu.edu.cn/xyzj1/hymx.htm",
+  "h": "civil.cqu.edu.cn"
+ },
+ "panzhihua": {
+  "f": "site-panzhihua.jpg",
+  "s": "https://baike.so.com/gallery/list?ghid=first&amp;pic_idx=1&amp;eid=23848704&amp;sid=24405346",
+  "h": "baike.so.com"
+ },
+ "gzu": {
+  "f": "site-gzu.jpg",
+  "s": "https://pic.voc.com.cn/pics/category/lists/cid/8.html",
+  "h": "pic.voc.com.cn"
+ },
+ "kaili": {
+  "f": "site-kaili.jpg",
+  "s": "https://www.thepaper.cn/newsDetail_forward_13127264",
+  "h": "www.thepaper.cn"
+ },
+ "gznu": {
+  "f": "site-gznu.jpg",
+  "s": "https://news.gznu.edu.cn/info/1002/33501.htm",
+  "h": "news.gznu.edu.cn"
+ },
+ "duyun": {
+  "f": "site-duyun.jpg",
+  "s": "http://www.china.com.cn/newphoto/city/2011-06/02/content_30538891_3.htm",
+  "h": "china.com.cn"
+ },
+ "gy-plaza": {
+  "f": "site-gy-plaza.jpg",
+  "s": "http://pic.voc.com.cn/pics/category/lists/cid/3.html",
+  "h": "pic.voc.com.cn"
+ },
+ "zunyi": {
+  "f": "site-zunyi.jpg",
+  "s": "http://vip.people.com.cn/albumsDetail?aid=1289801",
+  "h": "vip.people.com.cn"
+ },
+ "yangjialing": {
+  "f": "site-yangjialing.jpg",
+  "s": "https://soso.huitu.com/search/?kw=七大会址杨家岭中央大礼堂",
+  "h": "soso.huitu.com"
+ },
+ "lijiang": {
+  "f": "site-lijiang.jpg",
+  "s": "https://www.huitu.com/photo/show/20190807/185752116050.html",
+  "h": "www.huitu.com"
+ },
+ "yanan-museum": {
+  "f": "site-yanan-museum.jpg",
+  "s": "http://www.jccq.gov.cn/cqzx/sjdt_5/202210/t20221028_1690770.shtml",
+  "h": "www.jccq.gov.cn"
+ },
+ "zaoyuan": {
+  "f": "site-zaoyuan.jpg",
+  "s": "https://bbs.zol.com.cn/dcbbs/d19_140428.html",
+  "h": "bbs.zol.com.cn"
+ },
+ "kashgar": {
+  "f": "site-kashgar.jpg",
+  "s": "https://bbs.voc.com.cn/topic-5557901-1-1.html",
+  "h": "bbs.voc.com.cn"
+ },
+ "xining": {
+  "f": "site-xining.jpg",
+  "s": "https://hunan.voc.com.cn/article/202108/202108181743042723.html",
+  "h": "hunan.voc.com.cn"
+ },
+ "yinchuan-nanxun": {
+  "f": "site-yinchuan-nanxun.jpg",
+  "s": "https://dag.yinchuan.gov.cn/fzdahc/lzh/201503/t20150331_80140.html",
+  "h": "dag.yinchuan.gov.cn"
+ },
+ "daqing": {
+  "f": "site-daqing.jpg",
+  "s": "http://bbs.voc.com.cn/topic-6100207-1-1.html",
+  "h": "bbs.voc.com.cn"
+ },
+ "shihezi": {
+  "f": "site-shihezi.jpg",
+  "s": "http://www.chinanews.com/tp/hd2011/2012/04-19/98204.shtml",
+  "h": "chinanews.com"
+ },
+ "leifeng": {
+  "f": "site-leifeng.jpg",
+  "s": "https://www.fushun.gov.cn/ywdt/001002/20250303/820e4748-e95d-4418-b524-b3054a144c0a.html",
+  "h": "www.fushun.gov.cn"
+ },
+ "urumqi": {
+  "f": "site-urumqi.jpg",
+  "s": "https://news.ifeng.com/photo/special/maoxiang/",
+  "h": "news.ifeng.com"
+ }
+}
